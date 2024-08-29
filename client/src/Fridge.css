@@ -1,0 +1,10 @@
+.close {
+    background-image:"./images/fridge_close.jpg";
+    background-color: blue;
+    width: 1px
+}
+
+.open{
+    background-image: "./images/fridge_open.jpg";
+    width: 610px
+}

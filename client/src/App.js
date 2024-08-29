@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import SearchBar from "./SearchBar";
 import Filter from "./Filter";
- 
+import Fridge from "./Fridge";
+
 function App() {
     const [searchBarText, setSearchBarText] = useState("");
     const [filters, setFilters] = useState("");
@@ -90,6 +91,7 @@ function App() {
                 
                 <h1>React and flask</h1>
                 {/* Calling a data from setdata for showing */}
+                <Fridge />
                 <SearchBar apiCall={apiCall} />
                 <span>{data.name === 0 ? "" : viewTemplate}</span>
                 
