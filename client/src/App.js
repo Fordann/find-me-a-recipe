@@ -36,7 +36,8 @@ function App() {
     };
     fetch("/image_ingredient", requestOptions)
         .then(response => response.json())
-        .then(data => setIngredientsComponent([...ingredientsComponent, <Ingredient id={ingredients.length} image={data} value={ingredient}/>]))
+        .then(data => {console.log(data);
+          setIngredientsComponent([...ingredientsComponent, <Ingredient id={ingredients.length} image={data} value={ingredient}/>])})
     }
       
     function apiCall() {

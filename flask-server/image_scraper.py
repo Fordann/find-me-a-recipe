@@ -1,20 +1,24 @@
 from bs4 import BeautifulSoup
-import requests
+from selenium import webdriver
 
-def getImageFromIngredient(ingredient):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    }
-    
+def getImageFromIngredient(ingredient): 
     base_url = "https://www.pexels.com/fr-fr/chercher/"
     query_url = ingredient
     url = f"{base_url}{query_url}"
-    html = requests.get(url, headers=headers).content
-    soup = BeautifulSoup(html, 'html.parser')
-    print(soup.prettify())
-    image_link = soup.find_all("div", {"class": "BreakpointGrid_column__9MIoh"})
-     
-    return image_link
     
-print(getImageFromIngredient("fromage"))
+    browser = webdriver.Chrome()  # start a web browser
+    browser.get(url)  # navigate to URL
+    # wait for page to load
+    # by waiting for <h1> element to appear on the page
 
+    # retrieve fully rendered HTML content
+    content = browser.page_source
+    browser.close()
+
+    # we then could parse it with beautifulsoup
+
+    soup = BeautifulSoup(content, "html.parser")
+    grids = soup.find_all("article")
+    result = [grid.find("img")["src"] for grid in grids]
+    return result[0]
+    
