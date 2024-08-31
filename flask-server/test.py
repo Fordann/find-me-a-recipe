@@ -1,28 +1,31 @@
 from flask import Flask, request
 from marmiton import Marmiton, Recipe
-
-
+from image_scraper import getImageFromIngredient
 api = Flask(__name__)
 
-detailed_recipe = {}
-
-@api.route('/data', methods=["POST"])
+@api.route('/research_recipe', methods=["POST"])
 def loadIngredients():
     ingredients = request.get_json()
-    print(ingredients)
     category_recipe = Marmiton.searchCategory(ingredients)
+    print(ingredients)
     print(category_recipe)
-    #detailed_recipe = Marmiton.search(ingredients)
-    #recipe = detailed_recipe[0]
-    #main_recipe_url = recipe['url']
-    #detailed_recipe = Marmiton.get(main_recipe_url) 
-    #return detailed_recipe
     return category_recipe 
 
-@api.route('/data')
-def my_profile():
+@api.route('/detailed_recipe', methods=["POST"])
+def getBestRecipe():
+    recipe = request.get_json()
+    all_recipes = Marmiton.search(recipe)
+    main_recipe = all_recipes[0]
+    main_recipe_url = main_recipe['url']
+    detailed_recipe = Marmiton.get(main_recipe_url) 
     return detailed_recipe
- 
+
+@api.route('/image_ingredient', methods=["POST"])
+def findImageIngredient():
+    ingredient = request.get_json()
+    print(getImageFromIngredient(ingredient))
+    return getImageFromIngredient(ingredient)
+
 
 
 if __name__ == '__main__':

@@ -2,11 +2,11 @@ import { useState } from "react";
 
 
 function SearchBar(props) {
-    const [word, setWord] = useState(props.value);
+    const [ingredient, setIngredient] = useState(props.value);
 
     function handleChange(event) {
         event.preventDefault();
-        setWord(event.target.value); 
+        setIngredient(event.target.value); 
       }
 
       
@@ -19,19 +19,25 @@ function SearchBar(props) {
             type="text"
             id="search-bar"
             className="input input__lg"
-            name={word}
+            name={ingredient}
             autoComplete="on"
             onChange={handleChange}
           />
           <button type="button"
-          className="btn btn__primary btn__lg"
+          className="btn_add_ingredients"
+          onClick={()=> {         
+            props.addIngredient(ingredient);
+            document.getElementById("search-bar").value=""; 
+            }}>
+            Add Ingredient
+          </button>
+          <button type="button"
+          className="btn_search_with_ingredients"
           onClick={()=> {
-              
-              props.apiCall({"aqt":word});
-              document.getElementById("search-bar").value="";
-              
-              }}>
-            Add
+            props.apiCall();
+               
+          }}>
+          Start Research
           </button>
         </form>
       </div>

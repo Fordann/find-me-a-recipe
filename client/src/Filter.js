@@ -4,7 +4,7 @@ function Filter(props) {
     
 
     return (
-        <button onClick={() => props.apiCall({"aqt":String(props.category + " " + props.ingredient)})}>
+        <button onClick={() => console.log("click")}>
             {props.category} 
         </button>
     )
