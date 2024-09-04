@@ -3,11 +3,14 @@ import SearchBar from "./SearchBar";
 import Ingredient from "./Ingredient";
 import Filter from "./Filter";
 import Fridge from "./Fridge";
+import fridge_close from "./images/fridge_close.jpg"
+import fridge_open from "./images/fridge_open.jpg"
 
 
 function App() {
     const [ingredients, setIngredients] = useState([]);
     const [ingredientsComponent, setIngredientsComponent] = useState("");
+    const [fridge_state, setFridgeState] = useState("close");
     const [filters, setFilters] = useState("");
     const [data, setdata] = useState({
       budget: 0,
@@ -26,6 +29,17 @@ function App() {
     function addIngredient(ingredient) {
       setIngredients([...ingredients, ingredient]);
       searchImagefromIngredient(ingredient);
+    }
+
+    function changeFridgeState(fridge_html_content) {
+      if (fridge_state == "open") {
+        setFridgeState("close");
+        fridge_html_content.src = fridge_close;
+      }
+      else {
+        setFridgeState("open");
+        fridge_html_content.src = fridge_open;
+      }
     }
 
     function searchImagefromIngredient(ingredient) {
@@ -61,8 +75,6 @@ function App() {
       fetch("/research_recipe", requestOptions)
           .then(response => response.json())
           .then(data => changement(data))
-  
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
     }
 
     
@@ -87,7 +99,7 @@ function App() {
         total_time: data.total_time
 
     })}
-
+    const viewIngredients = fridge_state == "close" ? "" : ingredientsComponent;
     const viewTemplate = 
                 <div> 
                   <p>{filters}</p>
@@ -110,8 +122,8 @@ function App() {
         <div className="App">
             <header className="App-header">         
                 <h1>React and flask</h1>
-                <Fridge />
-                {ingredientsComponent}
+                <Fridge changeFridgeState={changeFridgeState}/>
+                {viewIngredients}
                 <SearchBar addIngredient = {addIngredient} apiCall={apiCall} />
                 <span>{data.name === 0 ? "" : viewTemplate}</span>
             </header>
