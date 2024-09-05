@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+aiohttp = "==3.10.5"
+beautifulsoup4 = "==4.12.3"
+flask = "==3.0.3"
+numpy = "==2.1.0"
+selenium = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

@@ -7,16 +7,17 @@ react:
 
 flask: 
 	@cd flask-server && \
-	. venv/bin/activate && \
+	pyenv activate marmiton && \
 	flask --app test run &
 
 setup: setupflask setupreact
 
 setupflask:
 	@cd flask-server && \
-	python3 -m venv venv && \
-	. venv/bin/activate && \
-	pip install -r requirements.txt
+	pyenv virtualenv 3.12.5 marmiton && \
+	source venv/bin/activate && \
+	pyenv activate marmiton && \
+	pipenv install *
 
 setupreact:
 	cd client && \
