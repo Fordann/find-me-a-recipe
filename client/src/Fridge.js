@@ -1,13 +1,16 @@
 import React from "react";
-import fridge_close from "./images/fridge_close.jpg"
+import {ReactComponent as FridgeImage} from "./images/frigo.svg"
+import "./styles/Fridge.css"
 
 function Fridge(props) {
-    let ingredient_spot_in_fridge = [[], [], [], [], [], [], [], []]
-
-    return <img id="close" src={fridge_close} alt="Logo" 
-    onClick={e => {
-        props.changeFridgeState(e.currentTarget);
-    }}/>;
+    return (
+        <div class="fridge_container">
+            <FridgeImage className="fridge_svg" id="close"
+                onClick={e => {
+                    props.changeFridgeState(e.currentTarget);
+                }}/>;
+        </div>) 
+    
 }
 
 export default Fridge;

@@ -3,12 +3,11 @@ import SearchBar from "./SearchBar";
 import Ingredient from "./Ingredient";
 import Filter from "./Filter";
 import Fridge from "./Fridge";
-import fridge_close from "./images/fridge_close.jpg"
-import fridge_open from "./images/fridge_open.jpg"
-
+import fridge_close from "./images/frigo.svg"
+import fridge_open from "./images/fridge_open.jpg";
 
 function App() {
-    const [ingredients, setIngredients] = useState([]);
+    const [ingredients, setIngredients] = useState(new Map());
     const [ingredientsComponent, setIngredientsComponent] = useState("");
     const [fridge_state, setFridgeState] = useState("close");
     const [filters, setFilters] = useState("");
@@ -27,12 +26,19 @@ function App() {
     });
 
     function addIngredient(ingredient) {
-      setIngredients([...ingredients, ingredient]);
+      ingredients.set(ingredient, 1);
+      setIngredients(ingredients);
       searchImagefromIngredient(ingredient);
     }
 
+    function changeQuantityIngredient(ingredient, quantity) {
+      let new_quantity_ingredients = {...ingredients};
+      new_quantity_ingredients[ingredient] = quantity;
+      setIngredients(new_quantity_ingredients);
+    }
+
     function changeFridgeState(fridge_html_content) {
-      if (fridge_state == "open") {
+      if (fridge_state === "open") {
         setFridgeState("close");
         fridge_html_content.src = fridge_close;
       }
@@ -47,11 +53,11 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(ingredient)
-    };
-    fetch("/image_ingredient", requestOptions)
-        .then(response => response.json())
-        .then(data => {console.log(data);
-          setIngredientsComponent([...ingredientsComponent, <Ingredient id={ingredients.length} image={data} value={ingredient}/>])})
+      };
+      fetch("/image_ingredient", requestOptions)
+          .then(response => response.json())
+          .then(data => {console.log(data);
+            setIngredientsComponent([...ingredientsComponent, <Ingredient id={ingredients.size} image={data} changeQuantity={changeQuantityIngredient} value={ingredient}/>])})
     }
       
     function apiCall() {
@@ -66,18 +72,17 @@ function App() {
           "veg": 0,                  
           }
       */
-     console.log(ingredients)
       const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({"aqt":ingredients.reduce((acc, ingredient)=> acc + " " + ingredient)})
+
+          body: JSON.stringify({"aqt":Array.from(ingredients.keys()).reduce((acc, ingredient)=> acc + " " + ingredient)})
       };
+
       fetch("/research_recipe", requestOptions)
           .then(response => response.json())
           .then(data => changement(data))
     }
-
-    
 
     function changement(data) {
       let filters_list = Object.values(data);
@@ -99,7 +104,7 @@ function App() {
         total_time: data.total_time
 
     })}
-    const viewIngredients = fridge_state == "close" ? "" : ingredientsComponent;
+    const viewIngredients = fridge_state === "close" ? "" : ingredientsComponent;
     const viewTemplate = 
                 <div> 
                   <p>{filters}</p>
@@ -115,17 +120,28 @@ function App() {
                   <p>steps: {data.steps}</p>
                   <p>total_time: {data.total_time}</p>
                 </div>
+    const row_style = {
+      backgroundColor : "red",
+      flexDirection : "row",
+    }
 
     
 
     return (
         <div className="App">
-            <header className="App-header">         
-                <h1>React and flask</h1>
-                <Fridge changeFridgeState={changeFridgeState}/>
-                {viewIngredients}
-                <SearchBar addIngredient = {addIngredient} apiCall={apiCall} />
-                <span>{data.name === 0 ? "" : viewTemplate}</span>
+            <header className="App-header">   
+              <div id="row" style={row_style}>
+                <div id="column1">
+                  <h1>React and flask</h1>
+                  <Fridge changeFridgeState={changeFridgeState}/>
+                  {viewIngredients}
+                  <SearchBar addIngredient = {addIngredient} apiCall={apiCall} />
+                </div>
+                <p>Bob</p>
+                <div id="column2">
+                  <span>{data.name === 0 ? "" : viewTemplate}</span>
+                </div>
+              </div>
             </header>
         </div>
     );

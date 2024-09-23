@@ -29,7 +29,6 @@ setup: setupflask setupreact
 
 # Configuration de l'environnement Flask avec pyenv et pipenv
 setupflask:
-	@brew update && \
 	cd $(FLASK_DIR) && \
 	curl https://pyenv.run | bash || true && \
 	export PATH="$${HOME}/.pyenv/bin:$$PATH" && \
