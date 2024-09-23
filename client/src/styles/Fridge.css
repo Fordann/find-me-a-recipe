@@ -1,0 +1,23 @@
+.fridge_container {
+    position: absolute;
+    overflow: hidden;
+    left: 50%;
+}
+
+#porte{
+    z-index: 10;
+    overflow: hidden;
+    animation: rotate 10s ease infinite;
+}
+
+#poignet_porte:hover {
+    transform: scale(1.005);
+}
+
+@keyframes rotate{
+    0%  {transform-origin: 100px 70px 200px;};
+    100% {
+        transform-origin: 100px 70px 200px;
+        transform: rotateY(-600deg);
+    }
+}
