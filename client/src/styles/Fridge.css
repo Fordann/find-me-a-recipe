@@ -1,26 +1,37 @@
 .fridge_container {
     border: solid 2px red;
-    width :100%;
+    width :80%;
+    margin-left: 60%;
     position: absolute;
-    overflow: hidden;
-    left: 50%;
+    overflow: visible;
+    
     
 }
 
-#porte { 
-    z-index: -1;
+@keyframes rotate{
+    0%  {transform: rotateY(0deg);}
+    25% { transform: scaleX(-1);}
+    75% {transform: scaleX(1);}
+    100% {}
 }
 
-#frigo {
-    width:100%;
-    animation: 5s ease-in-out 0s infinite fly;
+
+#frigo { 
+    animation: fly 5s ease infinite;
 }
+
 #porte{
-    overflow: hidden;
+    transform-origin: center center;
+    transition: transform 1s ;
+    backface-visibility: hidden;
+    animation: rotate 10s linear infinite;
     /*transform: rotateY(-60deg) translate3d(450px, 0, 0);*/
-    transform: rotateY(-90deg) translate3d(0, 0, 0); 
+    /*transform: rotateY(-90deg) translate3d(0, 0, 0); */
 }
 
+#porte:hover {
+    transform: rotateY(90deg);
+}
 #tiroir_bas:hover {
     transform: translate3d(50px, 25px, 0);
 }
@@ -31,6 +42,10 @@
 
 #poignet_porte:hover {
     transform: scale(1.005);
+}
+
+#tiroir_bas {
+    z-index: 1;
 }
 
 @keyframes fly{
