@@ -1,0 +1,23 @@
+.App {
+    border: solid 2px red;
+}
+
+.container-app {
+    width: 100vh;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mouse-hover {
+    flex-grow: 1;
+    transition: flex-grow 2s ease;
+}
+
+.mouse-hover:hover {
+    flex-grow: 4;
+}
+
+button {
+    font-size: 5vh;
+}

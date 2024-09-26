@@ -22,7 +22,9 @@ def getBestRecipe():
 
 @api.route('/image_ingredient', methods=["POST"])
 def findImageIngredient():
+    
     ingredient = request.get_json()
+    print(ingredient)
     result = getImageFromIngredient(ingredient)
     print([result])
     return [result]

@@ -3,22 +3,34 @@ import React from "react";
 
 function Ingredient(props) {
     let quantity = 0;
-    const mystyle = {
-        position : "absolute",
-        top :"17%",
-        left :"14%",
-        width: "4%",
-        height: "auto",
-      };
+
+    
+      function changeQuantityIngredient(ingredient, quantity) {
+      /*
+        let new_quantity_ingredients = {...ingredients};
+        new_quantity_ingredients[ingredient] = quantity;
+        setIngredients(new_quantity_ingredients);
+        */
+    }
+        
 
     function changeQuantity() {
-        quantity = <button style={mystyle} onClick={()=> console.log("bib")}>+</button>;
-        console.log("bob");
+        quantity = <button onClick={changeQuantityIngredient}>+</button>;
+    }
+
+    function decreaseQuantity() {
+
+    }
+
+    function increaseQuantity() {
+
     }
     return (
         <>
-            <img style={mystyle} id="close" src={props.image} onClick={() =>changeQuantity()} alt="Logo"></img>
-            <span style={mystyle} >{quantity}</span>
+            <img id="close" src={props.image} onClick={() =>changeQuantity()} alt="Logo"></img>
+            <span>{quantity}</span>
+            <button onClick={increaseQuantity}>+</button>
+            <button onClick={decreaseQuantity}>-</button>
             
         </>
     )

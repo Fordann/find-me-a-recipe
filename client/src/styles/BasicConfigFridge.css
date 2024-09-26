@@ -1,0 +1,12 @@
+.btn_config {
+        background-color: red;
+        width:33%;
+}
+
+.btn_config:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.btn_config:active {
+    background-color: #3e8e41; /* Even darker green on click */
+}

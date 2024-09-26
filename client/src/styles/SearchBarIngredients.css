@@ -1,0 +1,15 @@
+.searchBar {
+    border:solid 2px red;
+    width: 50%;
+    font-size: 2rem;
+    text-align: center;
+}
+
+
+.text {
+    width:20%;
+}
+.input {
+    width: 30%;
+
+}

@@ -1,0 +1,9 @@
+.add_ingredients {
+    border: solid 2px red;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    font:100%;
+    
+}
+

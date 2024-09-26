@@ -1,13 +1,11 @@
 import React from "react";
 
-function Filter(props) {
+function Recipe(props) {
     return (
         <button onClick={() => console.log("click")}>
-            {props.category} 
+            {props.name} 
         </button>
     )
-
-
 }
 
-export default Filter;
+export default Recipe;

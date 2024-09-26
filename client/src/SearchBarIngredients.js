@@ -1,7 +1,7 @@
 import { useState } from "react";
+import "./styles/SearchBarIngredients.css"
 
-
-function SearchBar(props) {
+function SearchBarIngredients(props) {
     const [ingredient, setIngredient] = useState(props.value);
 
     function handleChange(event) {
@@ -12,18 +12,17 @@ function SearchBar(props) {
       
   
     return (
-      <div>
-        <p>Type ingredients, click the add button and enjoy your recipe</p>
+      <div class="searchBar">
+        <p>Search Ingredients</p>
         <form >
           <input
             type="text"
             id="search-bar"
             className="input input__lg"
             name={ingredient}
-            autoComplete="on"
             onChange={handleChange}
           />
-          <button type="button"
+          <button type="button" 
           className="btn_add_ingredients"
           onClick={()=> {         
             props.addIngredient(ingredient);
@@ -46,4 +45,4 @@ function SearchBar(props) {
 
 
   
-  export default SearchBar;
+  export default SearchBarIngredients;
