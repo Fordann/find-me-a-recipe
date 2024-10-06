@@ -1,13 +1,16 @@
 import React, {useState} from "react";
-import FilterButton from "./FilterButton";
-import Recipe from "./Recipe";
-import ResponsiveButton from "./ResponsiveButton";
+import FilterButton from "./components/FilterButton";
+import Recipe from "./components/Recipe";
+import ResponsiveButton from "./components/ResponsiveButton";
 import "./styles/FieldSearchRecipe.css"
 
 function FieldSearchRecipe(props) {
     const [recipes, setRecipes] = useState([]);
     const [recipe_choosen, setRecipeChoosen] = useState(false);
     const [recipe, setRecipe] = useState("");
+
+
+
     function display_recipe(recipes) {
         setRecipes(recipes);
 }

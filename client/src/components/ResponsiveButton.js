@@ -1,9 +1,6 @@
-import React, {useState, useEffect, useContext} from "react";
-import ContainerContext from "./FieldAddingIngredients";
-
 function ResponsiveButton(props) {
-    const [fontSize, setFontSize] = useState('16px');
-    const ref_container = useContext(ContainerContext);
+    /*const [fontSize, setFontSize] = useState('16px');*/
+
 
 
     /*function adjustFontSize() {
