@@ -1,0 +1,36 @@
+{ 
+    "végé" : [
+        {"value": "champignon", "image": "https://images.pexels.com/photos/1927383/pexels-photo-1927383.jpeg"},
+        {"value": "carotte", "image": "https://images.pexels.com/photos/4173254/pexels-photo-4173254.jpeg"},
+        {"value": "poivron", "image": "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg"},
+        {"value": "brocoli", "image": "https://images.pexels.com/photos/3997071/pexels-photo-3997071.jpeg"},
+        {"value": "courgette", "image": "https://images.pexels.com/photos/1965450/pexels-photo-1965450.jpeg"},
+        {"value": "tomate", "image": "https://images.pexels.com/photos/2648899/pexels-photo-2648899.jpeg"},
+        {"value": "épinard", "image": "https://images.pexels.com/photos/1620590/pexels-photo-1620590.jpeg"},
+        {"value": "betterave", "image": "https://images.pexels.com/photos/4076514/pexels-photo-4076514.jpeg"},
+        {"value": "avocat", "image": "https://images.pexels.com/photos/1630365/pexels-photo-1630365.jpeg"},
+        {"value": "patate douce", "image": "https://images.pexels.com/photos/1965480/pexels-photo-1965480.jpeg"},
+        {"value": "pois", "image": "https://images.pexels.com/photos/6481305/pexels-photo-6481305.jpeg"},
+        {"value": "chou-fleur", "image": "https://images.pexels.com/photos/4050369/pexels-photo-4050369.jpeg"},
+        {"value": "oignon", "image": "https://images.pexels.com/photos/1827263/pexels-photo-1827263.jpeg"},
+        {"value": "ail", "image": "https://images.pexels.com/photos/3972790/pexels-photo-3972790.jpeg"},
+        {"value": "radis", "image": "https://images.pexels.com/photos/4281539/pexels-photo-4281539.jpeg"}
+    ],
+
+    "patissier" : [
+        {"value": "chocolat", "image": "https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "farine", "image": "https://images.pexels.com/photos/2675070/pexels-photo-2675070.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "sucre", "image": "https://images.pexels.com/photos/1894930/pexels-photo-1894930.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "beurre", "image": "https://images.pexels.com/photos/4170000/pexels-photo-4170000.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "oeufs", "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "lait", "image": "https://images.pexels.com/photos/5077056/pexels-photo-5077056.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "vanille", "image": "https://images.pexels.com/photos/4041158/pexels-photo-4041158.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "pomme", "image": "https://images.pexels.com/photos/2078816/pexels-photo-2078816.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "cannelle", "image": "https://images.pexels.com/photos/5872074/pexels-photo-5872074.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+        {"value": "framboises", "image": "https://images.pexels.com/photos/1571828/pexels-photo-1571828.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
+    ],
+
+    "personnalisé" : []
+}
+
+

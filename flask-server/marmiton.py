@@ -10,7 +10,7 @@ import ssl
 import asyncio 
 import aiohttp
 
-NUMBER_PAGES = 40
+NUMBER_PAGES = 2
 
 RECIPE_PRICE = {
 "CHEAP": 1,
@@ -189,11 +189,10 @@ class Marmiton:
 		
 
 		soup = BeautifulSoup(html_content, 'html.parser')
-		#print(soup)
 		search_data = []
 
 		articles = soup.findAll("a", href=True)
-		articles = [a for a in articles if a["href"].startswith("/recettes/recette_")]
+		articles = [a for a in articles if ("/recettes/recette_" in a["href"])]
 		iterarticles = iter(articles)
 		for article in iterarticles:
 			data = {}
@@ -231,10 +230,11 @@ class Marmiton:
 
 	@staticmethod
 	def _get_name(soup):
-		print(soup.find("h1").get_text().strip(' \t\n\r'))
-		return 
+		return soup.find("h1").get_text().strip(' \t\n\r')
+
 	@staticmethod
 	def _get_ingredients(soup):
+
 		quantity = [item["data-ingredientquantity"] for item in soup.findAll("span", {"class": "card-ingredient-quantity"})]
 		unit = [item["data-unitsingular"] for item in soup.findAll("span", {"class": "unit"})]
 		ingredients = [item["data-ingredientnamesingular"] for item in soup.findAll("span", {"class":"ingredient-name"})]
@@ -250,7 +250,7 @@ class Marmiton:
 
 	@staticmethod
 	def _get_images(soup):
-		return [img.get("data-src") for img in soup.find_all("img", {"height": 150}) if img.get("data-src")]
+		return [img.get("data-srcset") for img in soup.find_all("img") if img.get("data-srcset")]
 
 	@staticmethod
 	def _get_rate(soup):
@@ -292,14 +292,7 @@ class Marmiton:
 		return [item["data-servingsnb"] for item in soup.findAll("div", {"class": "mrtn-recette_ingredients-counter"})][0]
 
 	@classmethod
-	def get(cls, uri):
-		"""
-		'url' from 'search' method.
-		ex. "/recettes/recette_wraps-de-poulet-et-sauce-au-curry_337319.aspx"
-		"""
-
-		base_url = "http://www.marmiton.org"
-		url = base_url + ("" if uri.startswith("/") else "/") + uri
+	def get(cls, url):
 
 		try:
 			handler = urllib.request.HTTPSHandler(context=ssl._create_unverified_context())
@@ -311,12 +304,12 @@ class Marmiton:
 
 		soup = BeautifulSoup(html_content, 'html.parser')
 		elements = [
+			{"name": "images", "default_value": []},
 			{"name": "name", "default_value": ""},
 			{"name": "ingredients", "default_value": []},
 			{"name": "author", "default_value": "Anonyme"},
 			{"name": "author_tip", "default_value": ""},
 			{"name": "steps", "default_value": []},
-			{"name": "images", "default_value": []},
 			{"name": "rate", "default_value": ""},
 			{"name": "difficulty", "default_value": ""},
 			{"name": "budget", "default_value": ""},
@@ -333,7 +326,6 @@ class Marmiton:
 				data[element["name"]] = getattr(cls, "_get_" + element["name"])(soup)
 			except:
 				data[element["name"]] = element["default_value"]
-
 		return data
 
 	@staticmethod

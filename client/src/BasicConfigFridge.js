@@ -6,8 +6,8 @@ import "./styles/BasicConfigFridge.css";
 function BasicConfigFridge(props) {
 
     return (
-        <ResponsiveButton className="btn_config" text={props.text} onClick={props.click}>
-            {props.text} 
+        <ResponsiveButton className="btn_config" value={props.value} onClick={()=> props.click(props.value)}>
+            {props.value} 
         </ResponsiveButton>
     )
 

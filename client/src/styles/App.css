@@ -1,6 +1,13 @@
-.App {
-    border: solid 2px red;
+* { 
+    box-shadow: 0 0 0 3px red inset;
 }
+
+* {
+    font: 70px;
+    font-weight: 700;
+    font-family: "Nunito", italic;
+}
+
 
 .container-app {
     width: 100vh;
@@ -14,9 +21,10 @@
     transition: flex-grow 2s ease;
 }
 
+/*
 .mouse-hover:hover {
     flex-grow: 4;
-}
+}*/
 
 button {
     font-size: 5vh;

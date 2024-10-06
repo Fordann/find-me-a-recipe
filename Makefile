@@ -13,6 +13,16 @@ react:
 	@cd $(REACT_DIR) && \
 	npm start &
 
+#activate virtual env
+venv:
+	cd $(FLASK_DIR) && \
+	export PATH="$${HOME}/.pyenv/bin:$$PATH" && \
+	eval "$$(pyenv init --path)" && \
+	eval "$$(pyenv init -)" && \
+	eval "$$(pyenv virtualenv-init -)" && \
+	pyenv activate $(VENV_NAME)
+
+
 # Démarre le serveur Flask
 flask:
 	@cd $(FLASK_DIR) && \

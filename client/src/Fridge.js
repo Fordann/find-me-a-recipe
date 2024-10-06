@@ -1,6 +1,5 @@
 import React, {useRef, useState} from "react";
 import {ReactComponent as FridgeImageSVG} from "./images/frigo.svg"
-import Ingredient from "./Ingredient";
 import "./styles/Fridge.css"
 
 
@@ -34,7 +33,9 @@ function Fridge(props) {
                 ref={fridgeRef}
                 width="100%" 
                 className="fridge_svg"
-                onClick={changeFridgeState}/>
+                onClick={()=>{
+                    props.onClick();
+                    changeFridgeState();}}/>
         </div>) 
 }
 

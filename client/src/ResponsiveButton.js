@@ -34,7 +34,7 @@ function ResponsiveButton(props) {
     }, []);*/   
     return (
         <button className={props.className} onClick={props.onClick}>
-            {props.text} 
+            {props.value} 
         </button>
     )
 

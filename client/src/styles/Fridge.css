@@ -1,8 +1,8 @@
 .fridge_container {
-    border: solid 2px red;
-    width :30%;
-    margin-left: 60%;
+    width :20%;
     position: absolute;
+    left:0%;
+    top:10%;
     overflow: visible;
     animation: fly 5s ease infinite; 
 }
@@ -18,14 +18,14 @@
     transform: translateX(-100px);
 }
 #door_closed {
-    transform-origin: center center;
+    transform-origin: 72% center;
     transition: transform 1s ease;
     transform: scaleX(1);
 }
 
 
 #door_open{
-    transform-origin: center center;
+    transform-origin: 72% center;
     transition: transform 1s ease;
     transform: scaleX(-1);
     

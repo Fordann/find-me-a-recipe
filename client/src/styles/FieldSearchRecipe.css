@@ -1,11 +1,17 @@
 .search{
-    border: solid 2px red;
     width: 100vw;
-    display: flex;
-    align-items: center;
-
 }
 
 .text {
     font-size: 15vw;
+}
+
+.recipe {
+    margin-top: 50%;
+    margin-left: 50%;
+}
+
+.recipe_item {
+    display:flex;
+    flex-direction: row;
 }

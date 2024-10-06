@@ -13,7 +13,6 @@ function SearchBarIngredients(props) {
   
     return (
       <div class="searchBar">
-        <p>Search Ingredients</p>
         <form >
           <input
             type="text"

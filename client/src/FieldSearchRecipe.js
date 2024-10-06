@@ -5,25 +5,12 @@ import ResponsiveButton from "./ResponsiveButton";
 import "./styles/FieldSearchRecipe.css"
 
 function FieldSearchRecipe(props) {
-    const [statePage, setStatePage] = useState("research_not_started");
+    const [recipes, setRecipes] = useState([]);
+    const [recipe_choosen, setRecipeChoosen] = useState(false);
     const [recipe, setRecipe] = useState("");
-    const [ingredients, setIngredients] = useState("");
-
-    function display_recipe() {
-        setRecipe({
-            budget: recipe.budget,
-            cook_time: recipe.cook_time,
-            difficulty: recipe.difficulty,
-            ingredients: recipe.ingredients,
-            name: recipe.name,
-            nb_comments : recipe.nb_comments,
-            prep_time : recipe.prep_time,
-            rate: recipe.rate,
-            recipe_quantity : recipe.recipe_quantity,
-            steps: recipe.steps, 
-            total_time: recipe.total_time
-    
-    })}
+    function display_recipe(recipes) {
+        setRecipes(recipes);
+}
     
 
 
@@ -38,15 +25,14 @@ function FieldSearchRecipe(props) {
             "veg": 0,                  
             }
         */
-       
-            
-        
+        console.log(props.ingredients);
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
 
-            body: JSON.stringify({"aqt":Array.from(ingredients.keys()).reduce((acc, ingredient)=> acc + " " + ingredient)})
+            body: JSON.stringify({"aqt": props.ingredients.reduce((acc, ingredient)=> acc + " " + ingredient.value)})
         };
+
 
         fetch("/research_recipe", requestOptions)
             .then(response => response.json())
@@ -54,42 +40,62 @@ function FieldSearchRecipe(props) {
     }
 
 
-    function SearchRecipe() {
-        setStatePage("research_started");
-        apiCall();
+    function searchRecipe(recipe_name) {
+        console.log(recipe_name);
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+
+            body: JSON.stringify({"aqt":recipe_name})
+        };
+
+
+        fetch("/detailed_recipe", requestOptions)
+            .then(response => response.json())
+            .then(_recipe => {
+                setRecipe({
+                    name:_recipe.name,
+                    image:_recipe.images,
+                    budget: _recipe.budget,
+                    cook_time: _recipe.cook_time,
+                    difficulty: _recipe.difficulty,
+                    ingredients: _recipe.ingredients,
+                    nb_comments : _recipe.nb_comments,
+                    prep_time : _recipe.prep_time,
+                    rate: _recipe.rate,
+                    recipe_quantity : _recipe.recipe_quantity,
+                    steps: _recipe.steps, 
+                    total_time: _recipe.total_time 
+            });
+                setRecipeChoosen(true);
+            })
     }
-
-    const viewTemplate = 
-                <div> 
-                  <p>name: {recipe.name}</p>
-                  <p>budget: {recipe.budget}</p>
-                  <p>cook_time: {recipe.cook_time}</p>
-                  <p>difficulty: {recipe.difficulty}</p>
-                  <p>ingredients: {recipe.ingredients}</p>
-                  <p>nb_comments : {recipe.nb_comments}</p>
-                  <p>prep_time : {recipe.prep_time}</p>
-                  <p>rate: {recipe.rate}</p>
-                  <p>recipe_quantity : {recipe.recipe_quantity}</p>
-                  <p>steps: {recipe.steps}</p>
-                  <p>total_time: {recipe.total_time}</p>
-                </div>
-
-
-    
 
 
     return (
-        <div className="search mouse-hover container">
-            <button className="search_recipe_button" onClick={SearchRecipe}>Search Recipe</button>
-            <div className="filter_btns">
-                <FilterButton value="végé"></FilterButton>
-                <FilterButton value="carnivore"></FilterButton>
-                <FilterButton value="sans tomate"></FilterButton>
-                <FilterButton value="sans lactose"></FilterButton>
-                <FilterButton value="avec gingembre"></FilterButton>
-                <ResponsiveButton value="bob" onClick={()=>console.log("bob")}></ResponsiveButton>
+        <>
+        {
+        !recipe_choosen ? 
+            <div className="search mouse-hover container">
+                <button className="search_recipe_button" onClick={apiCall}>Search Recipe</button>
+                <div className="filter_btns">
+                    <FilterButton value="végé"></FilterButton>
+                    <FilterButton value="carnivore"></FilterButton>
+                    <FilterButton value="sans tomate"></FilterButton>
+                    <FilterButton value="sans lactose"></FilterButton>
+                    <FilterButton value="avec gingembre"></FilterButton>
+                    <ResponsiveButton value="bob" onClick={()=>console.log("bob")}></ResponsiveButton>
+                </div>
+                <>
+                    {recipes.map((_recipe)=> <ResponsiveButton value={_recipe} onClick={()=>searchRecipe(_recipe)}/>)}
+                </>
             </div>
-        </div>
+            :
+            <div className="recipe">
+                <Recipe value={recipe}/>
+            </div>
+        }
+        </>
     )
 
 
