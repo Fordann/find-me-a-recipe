@@ -1,13 +1,15 @@
 import { useState } from "react";
 import "./styles/SearchBarIngredients.css"
 
-function SearchBarIngredients(props) {
-    const [ingredient, setIngredient] = useState(props.value);
+function SearchBarIngredients({value, addIngredient, apiCall}) {
+    const [ingredient, setIngredient] = useState(value);
 
     function handleChange(event) {
         event.preventDefault();
         setIngredient(event.target.value); 
       }
+
+      
 
       
   
@@ -24,19 +26,12 @@ function SearchBarIngredients(props) {
           <button type="button" 
           className="btn_add_ingredients"
           onClick={()=> {         
-            props.addIngredient(ingredient);
+            addIngredient(ingredient);
             document.getElementById("search-bar").value=""; 
             }}>
             Add Ingredient
           </button>
-          <button type="button"
-          className="btn_search_with_ingredients"
-          onClick={()=> {
-            props.apiCall();
-               
-          }}>
-          Start Research
-          </button>
+         
         </form>
       </div>
     );

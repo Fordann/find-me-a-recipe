@@ -1,9 +1,8 @@
-* { 
+/** { 
     box-shadow: 0 0 0 3px red inset;
-}
+}*/
 
 * {
-    font: 70px;
     font-weight: 700;
     font-family: "Nunito", italic;
 }

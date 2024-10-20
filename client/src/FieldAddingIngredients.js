@@ -8,6 +8,9 @@ import "./styles/FieldAddingIngredients.css"
 
 function FieldAddingIngredients({ingredients, createIngredientFromData,updateIngredients}) {
     const [isFridgeClosed, setIsFridgeClosed] = useState(true);
+    const [isDisplayRecipes, setIsDisplayRecipes] = useState(false);
+    const [recipes, setRecipes] = useState([]);
+
 
     const searchImagefromIngredientToFillFridge = async (ingredient_value)=> {
         const requestOptions = {
@@ -50,13 +53,39 @@ function FieldAddingIngredients({ingredients, createIngredientFromData,updateIng
         updateIngredients(updated_ingredients);
     }
 
+    function researchRecipe() {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+
+            body: JSON.stringify({"aqt": ingredients.reduce((acc, ingredient)=> acc + " " + ingredient.value)})
+        };
+
+
+        fetch("/research_recipe", requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                setRecipes(data);
+                setIsDisplayRecipes(!isDisplayRecipes);
+            })
+        
+    }
+
     return (
-    <>
+    <>  
+        {
+        !isDisplayRecipes ?
+
         <div className="add_ingredients mouse-hover container">
             <Fridge onClick={() => {setIsFridgeClosed(!isFridgeClosed);}} />
             {
                 isFridgeClosed ? 
-                <SearchBarIngredients addIngredient={createIngredientFromName}/>
+                <>
+                    <SearchBarIngredients addIngredient={createIngredientFromName}/>
+                    <button type="button" className="btn_search_with_ingredients" onClick={researchRecipe}>
+                        Start Research
+                    </button>
+                </>
                 :
                 <div className="ingredients">
                     {ingredients.map((ingredient)=> 
@@ -70,7 +99,9 @@ function FieldAddingIngredients({ingredients, createIngredientFromData,updateIng
                 </div>
             }
         </div> 
-        < FieldSearchRecipe ingredients={ingredients}/>
+        :
+        < FieldSearchRecipe recipes={recipes} ingredients={ingredients}/>
+        }
     </>
     );
 }

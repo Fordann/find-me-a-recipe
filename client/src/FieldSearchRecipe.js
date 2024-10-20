@@ -4,45 +4,9 @@ import Recipe from "./components/Recipe";
 import ResponsiveButton from "./components/ResponsiveButton";
 import "./styles/FieldSearchRecipe.css"
 
-function FieldSearchRecipe(props) {
-    const [recipes, setRecipes] = useState([]);
-    const [recipe_choosen, setRecipeChoosen] = useState(false);
+function FieldSearchRecipe({recipes}) {
     const [recipe, setRecipe] = useState("");
-
-
-
-    function display_recipe(recipes) {
-        setRecipes(recipes);
-}
-    
-
-
-    function apiCall() {
-        // POST request using fetch inside useEffect React hook
-        /*
-        const donnees = {
-            "aqt": "boeuf bourguignon",  
-            "dt": "platprincipal",      
-            "exp": 2,                   
-            "dif": 2,                   
-            "veg": 0,                  
-            }
-        */
-        console.log(props.ingredients);
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-
-            body: JSON.stringify({"aqt": props.ingredients.reduce((acc, ingredient)=> acc + " " + ingredient.value)})
-        };
-
-
-        fetch("/research_recipe", requestOptions)
-            .then(response => response.json())
-            .then(data => display_recipe(data))
-    }
-
-
+    const [isRecipeChoosen, setIsRecipeChoosen] = useState(false)
     function searchRecipe(recipe_name) {
         console.log(recipe_name);
         const requestOptions = {
@@ -70,7 +34,7 @@ function FieldSearchRecipe(props) {
                     steps: _recipe.steps, 
                     total_time: _recipe.total_time 
             });
-                setRecipeChoosen(true);
+                setIsRecipeChoosen(true);
             })
     }
 
@@ -78,9 +42,8 @@ function FieldSearchRecipe(props) {
     return (
         <>
         {
-        !recipe_choosen ? 
+        !isRecipeChoosen ? 
             <div className="search mouse-hover container">
-                <button className="search_recipe_button" onClick={apiCall}>Search Recipe</button>
                 <div className="filter_btns">
                     <FilterButton value="végé"></FilterButton>
                     <FilterButton value="carnivore"></FilterButton>
