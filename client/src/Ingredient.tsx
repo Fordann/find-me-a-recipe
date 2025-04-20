@@ -8,7 +8,6 @@ interface IngredientProps {
     updateQuantityIngredient: (newQuantity: number) => void;
 }
 
-
 const Ingredient: React.FC<IngredientProps> = ({ image, quantity, updateQuantityIngredient }) => {
     const [isQuantityDisplayed, setIsQuantityDisplayed] = useState<boolean>(false);
 
