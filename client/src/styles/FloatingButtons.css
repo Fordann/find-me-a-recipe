@@ -1,0 +1,126 @@
+/* Floating buttons in swipe mode */
+.floating-favorites-btn,
+.floating-back-btn {
+    position: fixed;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 6px 16px -4px rgba(255,61,106,.35), 0 2px 4px -1px rgba(0,0,0,.25);
+    transition: transform .28s cubic-bezier(.16,.84,.44,1), box-shadow .3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-favorites-btn {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+}
+
+.floating-back-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+}
+
+.floating-favorites-btn {
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg,#ff8a3d,#ff3d6a 55%,#ffce3d);
+    color: #fff;
+    font-weight: 600;
+}
+
+@keyframes heartPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 8px 40px rgba(255, 61, 106, 0.8), 0 0 20px rgba(255, 61, 106, 0.6);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.floating-favorites-btn.pulse {
+    animation: heartPulse 0.5s ease-out;
+}
+
+.floating-favorites-btn:hover,
+.floating-back-btn:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 10px 24px -4px rgba(255,61,106,.4), 0 4px 8px -2px rgba(0,0,0,.3);
+}
+
+.floating-favorites-btn:active,
+.floating-back-btn:active {
+    transform: translateY(0) scale(.96);
+    box-shadow: 0 4px 8px -2px rgba(255,61,106,.35), 0 2px 4px -1px rgba(0,0,0,.4);
+}
+
+.favorites-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ffce3d;
+    color: #0c0f18;
+    font-size: 0.9rem;
+    font-weight: 700;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.floating-back-btn {
+    top: 30px;
+    left: 30px;
+    background: linear-gradient(135deg,#ff8a3d,#ff3d6a 55%,#ffce3d);
+    color: #fff;
+    font-weight: 600;
+}
+
+.floating-back-btn:hover {
+    transform: scale(1.15);
+    background: rgba(255, 138, 61, 1);
+    box-shadow: 0 8px 30px rgba(255, 138, 61, 0.5);
+}
+
+.floating-back-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .floating-favorites-btn,
+    .floating-back-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .floating-favorites-btn {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .floating-back-btn {
+        top: 20px;
+        left: 20px;
+    }
+    
+    .favorites-count {
+        min-width: 20px;
+        height: 20px;
+        font-size: 0.75rem;
+    }
+}

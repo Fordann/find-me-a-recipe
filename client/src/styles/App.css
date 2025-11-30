@@ -1,30 +1,99 @@
-/** { 
-    box-shadow: 0 0 0 3px red inset;
-}*/
+@import './variables.css';
 
+/* Reset and Base Styles */
 * {
-    font-weight: 700;
-    font-family: "Nunito", italic;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-
-.container-app {
-    width: 100vh;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.mouse-hover {
-    flex-grow: 1;
-    transition: flex-grow 2s ease;
+body {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
 }
 
-/*
-.mouse-hover:hover {
-    flex-grow: 4;
-}*/
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+  margin: 0;
+}
 
+h1 {
+  font-size: var(--font-size-4xl);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+}
+
+p {
+  margin: 0;
+  line-height: var(--line-height-relaxed);
+}
+
+/* Buttons */
 button {
-    font-size: 5vh;
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all var(--transition-base);
 }
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-secondary);
+}
+
+/* Inputs */
+input, textarea, select {
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+}
+
+/* Container */
+.container-app {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0 var(--spacing-md) var(--spacing-lg);
+  overflow-x: hidden;
+}
+

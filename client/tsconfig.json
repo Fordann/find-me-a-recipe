@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "esnext"],
-    "jsx": "react-jsx", // Pour React 17 et supérieur
+    "jsx": "react-jsx", // For React 17 and above
     "moduleResolution": "node",
     "module": "esnext",
     "strict": true,

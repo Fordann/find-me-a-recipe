@@ -1,29 +1,26 @@
-import React, { useState } from "react";
-import HomePage from "./pages/HomePage";
+import React from "react";
 import MainPage from "./pages/MainPage";
+import HomePage from "./pages/HomePage";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import "./styles/App.css";
 
-// Définition des types de pages possibles
-type PageState = "home_page" | "main_page";
-
+// Possible page types definition
 const App: React.FC = () => {
-    const [pageState, setPageState] = useState<PageState>("home_page");
-
+    const [page, setPage] = React.useState<"home_page"|"main_page">("home_page");
     return (
-        <div className="App">
-            <header className="App-header">   
-                <div className="container-app">
-                    <h1>React and Flask</h1>
-                    {
-                        pageState === "home_page" ? (
-                            <HomePage switchPage={(page: PageState) => setPageState(page)} />
+        <LanguageProvider>
+            <div className="App">
+                <header className="App-header">   
+                    <div className="container-app">
+                        {page === "home_page" ? (
+                            <HomePage switchPage={setPage} />
                         ) : (
                             <MainPage />
-                        )
-                    }
-                </div>
-            </header>
-        </div>
+                        )}
+                    </div>
+                </header>
+            </div>
+        </LanguageProvider>
     );
 };
 

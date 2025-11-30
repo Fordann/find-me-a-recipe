@@ -1,0 +1,28 @@
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: flask-server/Dockerfile
+    volumes:
+      - ./flask-server:/app
+      # Dependencies are managed with Poetry inside the container
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app
+    ports:
+      - "${FLASK_PORT:-5001}:5001"
+
+  react:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./client:/app:cached
+      - /app/node_modules
+    command: sh -c "npm install --silent && npm start"
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://flask:5001
+    depends_on:
+      - flask

@@ -1,0 +1,58 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.home-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  max-width: 600px;
+  text-align: center;
+}
+
+.home-start-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Normalize button margins in home for perfect centering */
+.home-start-row .btn_search_with_ingredients {
+  margin: 0.5rem 0 0 0;
+}
+
+.home-switch-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color, #ff6b6b);
+  margin: 0;
+}
+
+.home-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .home-title {
+    font-size: 2rem;
+  }
+
+  .home-subtitle {
+    font-size: 1rem;
+  }
+}

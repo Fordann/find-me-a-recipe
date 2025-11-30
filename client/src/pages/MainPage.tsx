@@ -1,21 +1,15 @@
-import React, { useState } from "react";
-import FieldAddingIngredients from "../FieldAddingIngredients";
-import SelectPresetIngredient from "../SelectPresetIngredient";
+import React, { useState, useEffect } from "react";
+import { FieldAddingIngredients } from "../components";
 import { v4 as uuidv4 } from "uuid";
-
-// Définition du type d'un ingrédient
-type Ingredient = {
-    id: string;
-    value: string;
-    quantity: number;
-    image: string;
-};
+import type { Ingredient } from "../types";
 
 const MainPage: React.FC = () => {
-    const [isPresetIngredientsChosen, setIsPresetIngredientsChosen] = useState<boolean>(false);
     const [ingredientsInFridge, setIngredientsInFridge] = useState<Ingredient[]>([]);
+    const [favorites, setFavorites] = useState<string[]>([]);
+    const [showFavoritesGrid, setShowFavoritesGrid] = useState<boolean>(false);
+    const [isViewingRecipe, setIsViewingRecipe] = useState<boolean>(false);
 
-    // Fonction pour ajouter un ingrédient
+    // Function to add an ingredient
     const createIngredientFromData = (ingredient_value: string, ingredient_image: string): void => {
         setIngredientsInFridge((prevIngredients) => [
             ...prevIngredients,
@@ -23,27 +17,33 @@ const MainPage: React.FC = () => {
         ]);
     };
 
-    // Fonction pour mettre à jour les ingrédients
+    // Function to update ingredients
     const updateIngredients = (ingredients: Ingredient[]): void => {
         setIngredientsInFridge(ingredients);
     };
 
+    const refreshFavorites = async () => {
+        try {
+            const r = await fetch('/favorites');
+            const data = await r.json();
+            setFavorites(Array.isArray(data) ? data : []);
+        } catch (e) {}
+    };
+
+    useEffect(() => { refreshFavorites(); }, []);
+
     return (
-        <>
-            {!isPresetIngredientsChosen ? (
-                <SelectPresetIngredient
-                    uploadPresetIngredients={() => setIsPresetIngredientsChosen(true)}
-                    createIngredientFromData={createIngredientFromData}
-                    ingredients={ingredientsInFridge}
-                />
-            ) : (
-                <FieldAddingIngredients
-                    updateIngredients={updateIngredients}
-                    createIngredientFromData={createIngredientFromData}
-                    ingredients={ingredientsInFridge}
-                />
-            )}
-        </>
+        <FieldAddingIngredients
+            updateIngredients={updateIngredients}
+            createIngredientFromData={createIngredientFromData}
+            ingredients={ingredientsInFridge}
+            favorites={favorites}
+            onFavoritesChange={setFavorites}
+            refreshFavorites={refreshFavorites}
+            onRecipeView={setIsViewingRecipe}
+            showFavoritesGrid={showFavoritesGrid}
+            onToggleFavoritesGrid={() => setShowFavoritesGrid(!showFavoritesGrid)}
+        />
     );
 };
 

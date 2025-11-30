@@ -2,7 +2,7 @@ import React from "react";
 
 // Typage des props
 interface FilterButtonProps {
-  value: string; // La valeur du bouton est une chaîne de caractères
+  value: string; // Button value is a string
 }
 
 const FilterButton: React.FC<FilterButtonProps> = (props) => {

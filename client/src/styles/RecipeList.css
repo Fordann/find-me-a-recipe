@@ -1,0 +1,107 @@
+/* Cards list for recipe selection */
+.recipe-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.recipe-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+.recipe-card__title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.recipe-card__cta {
+  font-size: .9rem;
+  color: #df3713;
+  position:relative;
+  overflow:hidden;
+  padding:.4rem .5rem;
+  border-radius:8px;
+}
+
+.recipe-card__pin {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  user-select: none;
+  transition: color .2s ease;
+}
+
+.recipe-card.pinned .recipe-card__pin {
+  color: #f5b400;
+  text-shadow: 0 0 8px rgba(245,180,0,.5);
+}
+
+/* Feedback particle container */
+.pin-particles {
+  position: absolute;
+  top: 0; left: 0; right:0; bottom:0;
+  pointer-events: none;
+}
+.pin-particles span {
+  position:absolute;
+  width:6px; height:6px;
+  background:#f5b400;
+  border-radius:50%;
+  opacity:0;
+}
+
+.pin-toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: #222;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  z-index: 200;
+  opacity:0;
+}
+
+.recipe-card__pin:hover { color: #ff9800; }
+
+.recipe-card__body { flex: 1; }
+
+/* Full-card liquid fill animation */
+.recipe-card { overflow:hidden; }
+.recipe-card.loading::after {
+  content:"";
+  position:absolute;
+  left:0; bottom:0;
+  width:100%; height:0%;
+  background:linear-gradient(180deg,rgba(255,198,138,0.55) 0%, rgba(255,138,61,0.45) 55%, rgba(255,107,53,0.4) 100%);
+  backdrop-filter: blur(2px);
+  animation:fillCardLiquid 1.1s ease forwards;
+  pointer-events:none;
+}
+@keyframes fillCardLiquid {
+  0% {height:0%;}
+  30% {height:40%;}
+  55% {height:68%;}
+  75% {height:85%;}
+  100% {height:100%;}
+}
+.recipe-card.loading .recipe-card__title,
+.recipe-card.loading .recipe-card__cta { position:relative; z-index:2; }

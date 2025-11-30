@@ -1,17 +1,30 @@
 import React from "react";
-import ResponsiveButton from "../components/ResponsiveButton";
+import { ResponsiveButton } from "../components";
+import { useLanguage } from "../contexts/LanguageContext";
+import LanguageSwitch from "../components/LanguageSwitch";
+import "../styles/HomePage.css";
 
-// Définition des types des props
+// Props type definition
 type HomePageProps = {
     switchPage: (page: "home_page" | "main_page") => void;
 };
 
 const HomePage: React.FC<HomePageProps> = ({ switchPage }) => {
+    const { t } = useLanguage();
+
     return (
-        <>
-            <h2>Welcome to the HomePage</h2>
-            <ResponsiveButton onClick={() => switchPage("main_page")} value="Next Page" />
-        </>
+        <div className="home-page">
+            <div className="home-content">
+                <h1 className="home-title">{t('home.welcome')}</h1>
+                <p className="home-subtitle">{t('home.subtitle')}</p>
+                <div className="home-switch-row">
+                    <LanguageSwitch />
+                </div>
+                <div className="home-start-row">
+                    <ResponsiveButton onClick={() => switchPage("main_page")} value={t('home.start')} />
+                </div>
+            </div>
+        </div>
     );
 };
 

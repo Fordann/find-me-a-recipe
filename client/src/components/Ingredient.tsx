@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import "./styles/Ingredient.css";
+import "../styles/Ingredient.css";
 
-// Définition du type des props
 interface IngredientProps {
     image: string;
     quantity: number;
     updateQuantityIngredient: (newQuantity: number) => void;
+    name?: string; // optional descriptive name for alt text
 }
 
-const Ingredient: React.FC<IngredientProps> = ({ image, quantity, updateQuantityIngredient }) => {
+const Ingredient: React.FC<IngredientProps> = ({ image, quantity, updateQuantityIngredient, name }) => {
     const [isQuantityDisplayed, setIsQuantityDisplayed] = useState<boolean>(false);
 
     return (
@@ -17,7 +17,7 @@ const Ingredient: React.FC<IngredientProps> = ({ image, quantity, updateQuantity
                 id="close" 
                 src={image} 
                 onClick={() => setIsQuantityDisplayed(!isQuantityDisplayed)} 
-                alt="Ingredient image"
+                alt={name ? name : ""} // meaningful alt when available, empty if decorative
             />
             {isQuantityDisplayed && (
                 <div className="ingredient-quantity">

@@ -1,5 +1,19 @@
 {
+  "name": "find-me-a-recipe",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "client:start": "cd client && npm start",
+    "client:install": "cd client && npm install",
+    "server:start": "cd flask-server && flask --app test run",
+    "setup": "npm run client:install",
+    "start": "node ./scripts/start.js",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
+  },
   "devDependencies": {
+    "concurrently": "^8.2.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.8.2"

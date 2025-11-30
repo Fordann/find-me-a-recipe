@@ -1,5 +1,9 @@
 .search{
-    width: 100vw;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 0 8px 24px;
 }
 
 .text {
@@ -7,11 +11,21 @@
 }
 
 .recipe {
-    margin-top: 50%;
-    margin-left: 50%;
+    margin: 2rem auto;
+    max-width: 960px;
+    width:100%;
+    box-sizing:border-box;
+    padding:0 12px 40px;
 }
 
 .recipe_item {
     display:flex;
     flex-direction: row;
+}
+
+.filter_btns {
+    padding-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
