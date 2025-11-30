@@ -61,18 +61,6 @@
   <p style="margin-top:8px; font-style:italic; color:#666;">Instant add/remove with clear visual confirmation.</p>
 </div>
 
-### Lightweight Versions (optional)
-If GIFs are too heavy, generate compressed variants or reduce dimensions:
-```bash
-# Recommended (optimized palette)
-ffmpeg -i docs/videos/searchBar.mp4 -vf "fps=12,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" -loop 0 docs/images/searchBar-small.gif
-ffmpeg -i docs/videos/swipe.mp4 -vf "fps=12,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" -loop 0 docs/images/swipe-small.gif
-ffmpeg -i docs/videos/favorite.mp4 -vf "fps=12,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" -loop 0 docs/images/favorite-small.gif
-```
-
-### MP4 Sources (maximum quality)
-`searchBar.mp4`, `swipe.mp4`, `favorite.mp4` in `docs/videos/` (ideal for external hosting or embedded pages).
-
 ---
 
 ## Quick Start
