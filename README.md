@@ -45,13 +45,13 @@
 
 ---
 
-## 🎬 Demo
+## Demo
 
 <table>
   <tr>
-    <td><video src="docs/videos/searchBar.mp4" width="260" controls muted playsInline></video></td>
-    <td><video src="docs/videos/swipe.mp4" width="260" controls muted playsInline></video></td>
-    <td><video src="docs/videos/favorite.mp4" width="260" controls muted playsInline></video></td>
+https://github.com/user-attachments/assets/126db2db-05e0-4427-aea4-738c75aa06f1
+https://github.com/user-attachments/assets/b76aa522-3fe8-4dff-b8c9-c5abf8580810
+https://github.com/user-attachments/assets/710f782f-ad0c-414b-8c8b-2f3cb0b47a56
   </tr>
   <tr>
     <td align="center"><em>Adding ingredients</em></td>
