@@ -45,20 +45,38 @@
 
 ---
 
-## 🎬 Demo
+## Demo
 
-<table>
-  <tr>
-    <td><video src="docs/videos/searchBar.mp4" width="260" controls muted playsInline></video></td>
-    <td><video src="docs/videos/swipe.mp4" width="260" controls muted playsInline></video></td>
-    <td><video src="docs/videos/favorite.mp4" width="260" controls muted playsInline></video></td>
-  </tr>
-  <tr>
-    <td align="center"><em>Adding ingredients</em></td>
-    <td align="center"><em>Swiping recipes</em></td>
-    <td align="center"><em>Managing favorites</em></td>
-  </tr>
-</table>
+<div align="center">
+  <h3>Ingredient Input</h3>
+  <img src="docs/images/searchBar.gif" alt="Ingredient input demo" width="520" />
+  <p style="margin-top:8px; font-style:italic; color:#666;">Visual ingredient building with instant feedback.</p>
+  <hr style="border:none;height:1px;background:#eee;width:60%;margin:28px auto;"/>
+  <h3>Recipe Swiping</h3>
+  <img src="docs/images/swipe.gif" alt="Recipe swiping demo" width="520" />
+  <p style="margin-top:8px; font-style:italic; color:#666;">Gesture‑based browsing for fast suggestion exploration.</p>
+  <hr style="border:none;height:1px;background:#eee;width:60%;margin:28px auto;"/>
+  <h3>Favorites Management</h3>
+  <img src="docs/images/favorite.gif" alt="Favorites management demo" width="520" />
+  <p style="margin-top:8px; font-style:italic; color:#666;">Instant add/remove with clear visual confirmation.</p>
+</div>
+
+### Lightweight Versions (optional)
+If GIFs are too heavy, generate compressed variants or reduce dimensions:
+```bash
+# Recommended (optimized palette)
+ffmpeg -i docs/videos/searchBar.mp4 -vf "fps=12,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" -loop 0 docs/images/searchBar-small.gif
+ffmpeg -i docs/videos/swipe.mp4 -vf "fps=12,scale=400:-1:flags:lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" -loop 0 docs/images/swipe-small.gif
+ffmpeg -i docs/videos/favorite.mp4 -vf "fps=12,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" -loop 0 docs/images/favorite-small.gif
+```
+
+### MP4 Sources (maximum quality)
+`searchBar.mp4`, `swipe.mp4`, `favorite.mp4` in `docs/videos/` (ideal for external hosting or embedded pages).
+
+### Performance Tips
+- Keep preview GIFs short (<15s); use MP4/WebM for longer demos.
+- Reduced palette (96–128 colors) greatly lowers file size.
+- Keep width ≤ 520px for readability without excessive load.
 
 ---
 
