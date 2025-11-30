@@ -17,32 +17,6 @@
 
 **Find Me a Recipe** helps you discover recipes matched to what you already have. Instead of searching blindly, you get curated, ingredient‑aware suggestions with minimal external shopping.
 
-| Impact | Description |
-|--------|-------------|
-| Less Waste | Use ingredients before they expire |
-| Cost Efficient | Avoid buying unnecessary items |
-| Fast Discovery | Async scraping & caching reduce latency |
-| Multilingual | English / French with intelligent translation |
-| Favorites | Save, revisit, and organize liked recipes |
-| Relevance | Filters out recipes needing many missing items |
-
----
-
----
-
-## Features
-
-<table>
-<thead><tr><th>Category</th><th>Highlights</th></tr></thead>
-<tbody>
-<tr><td><strong>Discovery</strong></td><td>Ingredient-driven search · Minimal missing items · Real-time scraping · High-res images</td></tr>
-<tr><td><strong>UX</strong></td><td>Swipe navigation · Animated favorites · Sticky sections · Responsive layout</td></tr>
-<tr><td><strong>Localization</strong></td><td>English/French UI · Smart translation of queries · Language-specific caching</td></tr>
-<tr><td><strong>Performance</strong></td><td>Async batch fetch · Server + client caching · Optimized DOM & CSS · Efficient parsing</td></tr>
-<tr><td><strong>Developer</strong></td><td>Automated tests · Structured logging · Single start script · Dockerized environment</td></tr>
-</tbody>
-</table>
-
 ---
 
 ## Demo
@@ -60,6 +34,21 @@
   <img src="docs/images/favorite.gif" alt="Favorites management demo" width="520" />
   <p style="margin-top:8px; font-style:italic; color:#666;">Instant add/remove with clear visual confirmation.</p>
 </div>
+
+---
+
+## Features
+
+<table>
+<thead><tr><th>Category</th><th>Highlights</th></tr></thead>
+<tbody>
+<tr><td><strong>Discovery</strong></td><td>Ingredient-driven search · Minimal missing items · Real-time scraping · High-res images</td></tr>
+<tr><td><strong>UX</strong></td><td>Swipe navigation · Animated favorites · Sticky sections · Responsive layout</td></tr>
+<tr><td><strong>Localization</strong></td><td>English/French UI · Smart translation of queries · Language-specific caching</td></tr>
+<tr><td><strong>Performance</strong></td><td>Async batch fetch · Server + client caching · Optimized DOM & CSS · Efficient parsing</td></tr>
+<tr><td><strong>Developer</strong></td><td>Automated tests · Structured logging · Single start script · Dockerized environment</td></tr>
+</tbody>
+</table>
 
 ---
 
