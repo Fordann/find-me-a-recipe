@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 import anime from 'animejs';
 import '../styles/SwipeCard.css';
 
@@ -21,6 +22,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
   zIndex,
   isTop,
 }) => {
+  const { t } = useLanguage();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const dragState = useRef({ startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
@@ -374,13 +376,13 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
       <div className="swipe-indicator swipe-like">
         <div className="indicator-content">
           <span className="indicator-icon">💖</span>
-          <span className="indicator-text">J'AIME</span>
+          <span className="indicator-text">{t('swipe.like')}</span>
         </div>
       </div>
       <div className="swipe-indicator swipe-nope">
         <div className="indicator-content">
           <span className="indicator-icon">💩</span>
-          <span className="indicator-text">PASSER</span>
+          <span className="indicator-text">{t('swipe.pass')}</span>
         </div>
       </div>
     </div>

@@ -76,6 +76,10 @@ const translations = {
     'button.recipes': 'Recipes',
     'button.favorites': 'Favorites',
     'button.myFavorites': '❤️ My Favorites',
+    
+    // Swipe indicators
+    'swipe.like': 'LIKE',
+    'swipe.pass': 'PASS',
   },
   fr: {
     // Home page
@@ -143,6 +147,10 @@ const translations = {
     'button.recipes': 'Recettes',
     'button.favorites': 'Favoris',
     'button.myFavorites': '❤️ Mes Favoris',
+    
+    // Swipe indicators
+    'swipe.like': "J'AIME",
+    'swipe.pass': 'PASSER',
   }
 };
 
