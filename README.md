@@ -53,7 +53,7 @@
   <p style="margin-top:8px; font-style:italic; color:#666;">Visual ingredient building with instant feedback.</p>
   <hr style="border:none;height:1px;background:#eee;width:60%;margin:28px auto;"/>
   <h3>Recipe Swiping</h3>
-  <img src="docs/images/swipe_v2.gif" alt="Recipe swiping demo" width="520" />
+  <img src="docs/images/swipe.gif" alt="Recipe swiping demo" width="520" />
   <p style="margin-top:8px; font-style:italic; color:#666;">Gesture‑based browsing for fast suggestion exploration.</p>
   <hr style="border:none;height:1px;background:#eee;width:60%;margin:28px auto;"/>
   <h3>Favorites Management</h3>
