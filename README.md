@@ -86,8 +86,8 @@ npm start
 
 # Backend (separate terminal)
 cd flask-server
-poetry install
-poetry run flask --app app run
+uv sync
+uv run flask --app app run
 ```
 </details>
 
@@ -100,7 +100,7 @@ poetry run flask --app app run
 |-------|-------------|
 | Frontend | React 19 · TypeScript · Anime.js · CSS Variables · Jest/RTL |
 | Backend | Flask · BeautifulSoup4 · aiohttp · asyncio · deep-translator |
-| Infra | Docker · Docker Compose · Poetry · npm |
+| Infra | Docker · Docker Compose · uv · npm |
 | Quality | Structured logging · Automated tests on start · Caching tiers |
 
 ---

@@ -5,7 +5,7 @@ services:
       dockerfile: flask-server/Dockerfile
     volumes:
       - ./flask-server:/app
-      # Dependencies are managed with Poetry inside the container
+      # Dependencies are managed with uv inside the container
     environment:
       - FLASK_ENV=development
       - FLASK_APP=app

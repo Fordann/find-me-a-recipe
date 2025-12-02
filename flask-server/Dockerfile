@@ -2,16 +2,14 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install Poetry using pip (no apt-get needed)
-RUN pip install --no-cache-dir poetry==1.8.3
+# Install uv (fast Python package installer)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Copy only dependency files first (for Docker layer caching)
 COPY flask-server/pyproject.toml /app/pyproject.toml
 
-# Configure Poetry and install dependencies
-RUN poetry config virtualenvs.create false && \
-    poetry install --no-interaction --no-ansi --no-root || \
-    pip install --no-cache-dir flask flask-cors flask-caching deep-translator beautifulsoup4 requests aiohttp
+# Install dependencies with uv (no venv in container)
+RUN uv pip install --system --no-cache -r pyproject.toml
 
 # Copy application code
 COPY flask-server /app

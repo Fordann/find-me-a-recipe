@@ -45,8 +45,8 @@ Install new Python dependency:
 
 ```bash
 cd flask-server
-poetry add flask-caching
-poetry install
+uv add flask-caching
+uv sync
 ```
 
 ## Expected Performance Gains

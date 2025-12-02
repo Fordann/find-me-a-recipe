@@ -5,7 +5,7 @@
   "scripts": {
     "client:start": "cd client && npm start",
     "client:install": "cd client && npm install",
-    "server:start": "cd flask-server && flask --app test run",
+    "server:start": "cd flask-server && uv run flask --app app run",
     "setup": "npm run client:install",
     "start": "node ./scripts/start.js",
     "docker:build": "docker compose build",
