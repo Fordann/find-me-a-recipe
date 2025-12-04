@@ -37,11 +37,6 @@ const translations = {
     'search.placeholder.tacos': 'tacos',
     'search.placeholder.curry': 'green curry',
     
-    // History
-    'history.title': 'Search History',
-    'history.clear': 'Clear',
-    'history.empty': 'No searches yet.',
-    
     // Favorites
     'favorites.title': 'My Favorites',
     'favorites.empty': 'No favorites yet',
@@ -107,11 +102,6 @@ const translations = {
     'search.placeholder.dahl': 'dahl',
     'search.placeholder.tacos': 'tacos',
     'search.placeholder.curry': 'curry vert',
-    
-    // History
-    'history.title': 'Historique de recherche',
-    'history.clear': 'Vider',
-    'history.empty': 'Aucune recherche.',
     
     // Favorites
     'favorites.title': 'Mes Favoris',

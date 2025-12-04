@@ -107,9 +107,11 @@ class Recipe:
 
 class Marmiton:
     @staticmethod
-    async def searchCategory_async_only(query_dict):
+    async def searchCategory_async_only(query):
+        print(query)
         base_url = "http://www.marmiton.org/recettes/recherche.aspx?"
-        query_url = urllib.parse.urlencode(query_dict)
+        query_url = urllib.parse.urlencode({"aqt": query})
+        
         search_data = []
         
         async def scrap(html):
@@ -165,11 +167,12 @@ class Marmiton:
 
     # --- SYNCHRONOUS (Used by Flask /detailed_recipe to find URL) ---
     @staticmethod
-    def search(query_dict, html_content=None):
+    def search(query, html_content=None):
         """Synchronous search of first results page."""
         base_url = "http://www.marmiton.org/recettes/recherche.aspx?"
-        query_url = urllib.parse.urlencode(query_dict)
+        query_url = f"aqt={query}"
         url = base_url + query_url
+
         search_data = []
 
         try:
@@ -348,37 +351,32 @@ class Marmiton:
         info_items = soup.find_all("div", class_="recipe-primary__item")
         
         for item in info_items:
-            # Value is in <span> immediately following icon
             value_span = item.find('span')
             value = value_span.get_text().strip().replace("\xa0", " ") if value_span else ""
 
-            # Check icon content to know which data we have (or visible value)
             if "min" in value or "h" in value:
-                 # First item is often total time
                  if "total_time" not in data:
                      data["total_time"] = value
             elif "difficul" in value.lower():
                  data["difficulty"] = value
             elif "marché" in value.lower() or "budget" in value.lower():
                  data["budget"] = value
-            # Use LD+JSON code for more reliable source if available
             
         return data
 
     @classmethod
     def _get_total_time(cls, soup):
-        # If possible, use "totalTime" field from JSON-LD for more reliability
         json_ld_script = soup.find('script', type='application/ld+json', text=re.compile('Recipe'))
         if json_ld_script:
             try:
                 import json
                 data = json.loads(json_ld_script.text)
-                # Format is PTxxM (e.g. PT22M), we clean it
+
                 total_time = data.get("totalTime", "").replace("PT", "").replace("M", " min").replace("H", " h ")
                 if total_time:
                     return total_time.strip()
             except Exception:
-                pass # Revert to scraping if JSON fails
+                pass 
         
         return cls._get_times_difficulty_budget(soup).get("total_time", "")
 

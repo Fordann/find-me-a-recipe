@@ -33,7 +33,7 @@ export async function cachedFetch<T>(
     return pendingRequests.get(cacheKey)!;
   }
 
-  console.log('🌐 New request:', url, 'Body:', options?.body);
+  console.log('🌐 New request:', url, options?.body ? `Body: ${options?.body}`: "");
 
   // Create new request
   const request = fetch(url, options)

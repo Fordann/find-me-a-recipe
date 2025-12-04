@@ -10,9 +10,10 @@ const target = process.env.REACT_APP_API_URL || 'http://localhost:5001';
 module.exports = function (app) {
   const proxyOptions = { target, changeOrigin: true };
   app.use('/research_recipe', createProxyMiddleware(proxyOptions));
+  app.use('/fr/research_recipe', createProxyMiddleware(proxyOptions));
+  app.use('/en/research_recipe', createProxyMiddleware(proxyOptions));
   app.use('/detailed_recipe', createProxyMiddleware(proxyOptions));
   app.use('/image_ingredient', createProxyMiddleware(proxyOptions));
   app.use('/recipe_image', createProxyMiddleware(proxyOptions));
   app.use('/favorites', createProxyMiddleware(proxyOptions));
-  app.use('/history', createProxyMiddleware(proxyOptions));
 };

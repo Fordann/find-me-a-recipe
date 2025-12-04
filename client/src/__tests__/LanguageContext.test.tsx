@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { LanguageProvider, useLanguage } from '../contexts/LanguageContext';
-import React from 'react';
 
 // Test component to use the hook
 function TestComponent() {

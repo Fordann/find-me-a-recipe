@@ -5,7 +5,9 @@ import asyncio
 import aiohttp
 from marmiton import Marmiton, Recipe
 from translator import translate_to_french, translate_to_english, translate_recipe_to_english, translate_recipe_list_to_english
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 api = Flask(__name__)
 
 # Configure caching (simple in-memory cache)
@@ -28,7 +30,6 @@ async def fetch_recipe_image_async(session, recipe):
     # Check cache first
     recipe_url = recipe['url']
     if recipe_url in image_cache:
-        print(f"✓ Image cache hit for {recipe.get('name', '')}")
         return {'name': recipe.get('name', ''), 'image': image_cache[recipe_url]}
     
     try:
@@ -53,14 +54,12 @@ async def fetch_recipe_image_async(session, recipe):
             # Store in cache
             if image_url:
                 image_cache[recipe_url] = image_url
-                print(f"✓ Cached image for {recipe.get('name', '')}")
             
             return {'name': recipe.get('name', ''), 'image': image_url}
     except asyncio.TimeoutError:
-        print(f"⏱ Timeout fetching image for {recipe.get('name')}")
         return {'name': recipe.get('name', ''), 'image': ''}
+
     except Exception as e:
-        print(f"✗ Error fetching image for {recipe.get('name')}: {e}")
         return {'name': recipe.get('name', ''), 'image': ''}
 
 async def fetch_multiple_images(recipes, limit=4):
@@ -73,40 +72,20 @@ async def fetch_multiple_images(recipes, limit=4):
         tasks = [fetch_recipe_image_async(session, recipe) for recipe in recipes[:limit]]
         return await asyncio.gather(*tasks, return_exceptions=True)
 
-@api.route('/research_recipe', methods=["POST"])
-def loadIngredients():
-    data = request.get_json()
-    print(f"\n{'='*60}")
-    print(f"🔍 RECIPE SEARCH REQUEST")
-    print(f"{'='*60}")
-    print(f"Raw request: {data}")
+@api.route('/<string:lang>/research_recipe/<string:ingredient_name>', methods=["GET"])
+def get_recipe_from_ingredient(lang, ingredient_name):
+    api.logger.info(f"Ingredient: {ingredient_name}")
+
+    query = ingredient_name
     
-    # Extract language and ingredients
-    language = data.get('language', 'en') if isinstance(data, dict) else 'en'
-    ingredients = data.get('ingredients', data) if isinstance(data, dict) and 'ingredients' in data else data
+    if lang == 'en':
+        query = translate_to_french(query)
     
-    print(f"🌐 Language: {language}")
-    
-    # Translate English query to French for Marmiton search (only if language is 'en')
-    if language == 'en' and isinstance(ingredients, dict) and 'aqt' in ingredients:
-        original_query = ingredients['aqt']
-        french_query = translate_to_french(original_query)
-        print(f"🔄 Query translation: '{original_query}' -> '{french_query}'")
-        ingredients['aqt'] = french_query
-    elif language == 'fr':
-        print(f"✓ French mode: NO translation will be applied")
-    
-    print(f"🔎 Searching Marmiton with: {ingredients}")
-    
-    recipes = Marmiton.search(ingredients)
-    print(f"📋 Found {len(recipes)} recipes from Marmiton")
-    if recipes:
-        print(f"   Top 3 results: {[r.get('name', 'N/A') for r in recipes[:3]]}")
+    recipes = Marmiton.search(query)
     
     # Fetch images in parallel for first 4 recipes only (faster initial load)
     if recipes:
         try:
-            print(f"📥 Fetching images for {min(4, len(recipes))} recipes...")
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             result = loop.run_until_complete(fetch_multiple_images(recipes, limit=4))
@@ -118,61 +97,19 @@ def loadIngredients():
             # Add remaining recipes without images (lazy load)
             for recipe in recipes[len(result):]:
                 result.append({'name': recipe.get('name', ''), 'image': ''})
+
         except Exception as e:
-            print(f"✗ Error in parallel image fetch: {e}")
             # Fallback: return without images
             result = [{'name': r.get('name', ''), 'image': ''} for r in recipes]
     else:
         result = []
     
     # Translate recipe names to English ONLY if language is 'en'
-    if language == 'en':
-        print(f"🔄 Translating {len(result)} recipe names to English...")
+    if lang == 'en':
         result = translate_recipe_list_to_english(result)
-    else:
-        print(f"✓ Keeping {len(result)} recipe names in French (language={language})")
-
-    print(f"✓ Returning {len(result)} recipes")
-    if result:
-        print(f"   Sample recipe name: '{result[0].get('name', 'N/A')}'")
-        print(f"   Language mode was: {language}")
-    print(f"{'='*60}\n")
-    
-    # Build search term from ingredients payload (supports both dicts and already formatted aqt)
-    if isinstance(ingredients, dict):
-        search_term = ingredients.get('aqt') or ' '.join(v for v in ingredients.values() if isinstance(v, str))
-    else:
-        search_term = str(ingredients)
-
-    # Retrieve existing history from cookie
-    raw_history = request.cookies.get('search_history')
-    try:
-        history = json.loads(raw_history) if raw_history else []
-    except Exception:
-        history = []
-
-    # Update history: prepend latest, dedupe preserving order, cap length
-    if search_term and search_term.strip():
-        new_list = [search_term.strip()] + [h for h in history if h != search_term.strip()]
-        history = new_list[:10]  # keep last 10
 
     resp = make_response(jsonify(result))
-    resp.set_cookie('search_history', json.dumps(history), max_age=60*60*24*30, httponly=False, samesite='Lax', path='/')
-    return resp
-
-@api.route('/history', methods=['GET'])
-def get_history():
-    raw_history = request.cookies.get('search_history')
-    try:
-        history = json.loads(raw_history) if raw_history else []
-    except Exception:
-        history = []
-    return jsonify(history)
-
-@api.route('/history/clear', methods=['POST'])
-def clear_history():
-    resp = make_response(jsonify({"status": "cleared"}))
-    resp.set_cookie('search_history', json.dumps([]), max_age=60*60*24*30, httponly=False, samesite='Lax', path='/')
+    api.logger.info(result)
     return resp
 
 # ---- Favorites (pins) ----
@@ -208,35 +145,22 @@ def toggle_favorite():
     _write_cookie_list(resp, 'favorites', favs)
     return resp
 
-@api.route('/detailed_recipe', methods=["POST"])
-def getBestRecipe():
+@api.route('/<string:lang>/detailed_recipe/<string:ingredient_name>', methods=["GET"])
+def getBestRecipe(language, ingredient_name):
+    api.logger.info(ingredient_name)
     try:
-        data = request.get_json()
-        print("getBestRecipe called with:", data)
-        
-        # Extract language and recipe request
-        language = data.get('language', 'en') if isinstance(data, dict) else 'en'
-        recipe_request = data.get('ingredients', data) if isinstance(data, dict) and 'ingredients' in data else data
-        
-        print(f"🌐 Language: {language}")
+        query = ingredient_name
         
         # Translate English query to French (only if language is 'en')
-        if language == 'en' and isinstance(recipe_request, dict) and 'aqt' in recipe_request:
-            original_query = recipe_request['aqt']
-            french_query = translate_to_french(original_query)
-            print(f"🔄 Detailed recipe query translation: '{original_query}' -> '{french_query}'")
-            recipe_request['aqt'] = french_query
-        elif language == 'fr':
-            print(f"✓ French mode: NO translation will be applied")
+        if language == 'en':
+            query = translate_to_french(query)
         
-        all_recipes = Marmiton.search(recipe_request)
+        all_recipes = Marmiton.search(query)
         if not all_recipes:
             return jsonify({"error": "no recipes found"}), 404
 
         main_recipe = all_recipes[0]
         main_recipe_url = main_recipe.get('url')
-        print(f"📍 Selected recipe: '{main_recipe.get('name')}' from {len(all_recipes)} results")
-        print(f"   URL: {main_recipe_url}")
         if not main_recipe_url:
             return jsonify({"error": "recipe data incomplete"}), 502
 
@@ -245,9 +169,6 @@ def getBestRecipe():
         # Translate recipe to English (only if language is 'en')
         if language == 'en':
             detailed_recipe = translate_recipe_to_english(detailed_recipe)
-            print(f"✅ Returning recipe: '{detailed_recipe.get('name')}' (translated from French)")
-        else:
-            print(f"✅ Returning recipe: '{detailed_recipe.get('name')}' (French)")
         
         # Ensure 'images' is returned (frontend expects 'images')
         if 'images' in detailed_recipe and detailed_recipe['images']:
@@ -259,27 +180,18 @@ def getBestRecipe():
         return jsonify({"error": "unexpected error", "details": str(e)}), 500
 
 
-@api.route('/recipe_image', methods=["POST"])
-def get_recipe_image():
+@api.route('/<string:lang>/recipe_image/<string:ingredient_name>', methods=["GET"])
+def get_recipe_image(lang, recipe_name):
     """Get image for a specific recipe by name"""
+
+    api.logger.info(f"Ingredient: {recipe_name}")
+
     try:
-        payload = request.get_json()
-        recipe_name = payload.get('name')
-        language = payload.get('language', 'en')
-        
-        if not recipe_name:
-            return jsonify({"error": "missing recipe name"}), 400
-        
-        # Translate English recipe name to French for search (only if language is 'en')
-        search_name = recipe_name
-        if language == 'en':
-            search_name = translate_to_french(recipe_name)
-            print(f"Recipe image search: '{recipe_name}' -> '{search_name}'")
-        else:
-            print(f"Recipe image search: '{recipe_name}' (French)")
-        
-        # Search for the recipe
-        recipes = Marmiton.search({'aqt': search_name})
+        if lang == 'en':
+            query = translate_to_french(query)
+    
+        recipes = Marmiton.search(query)
+
         if not recipes:
             return jsonify({"error": "recipe not found"}), 404
         
@@ -300,25 +212,6 @@ def get_recipe_image():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-@api.route('/image_ingredient', methods=["POST"])
-def findImageIngredient():
-    payload = request.get_json()
-    # Accept either a raw string or a JSON object like { "ingredient": "tomato" }
-    if isinstance(payload, dict):
-        # try common keys that the frontend may send
-        term = payload.get("ingredient") or payload.get("value") or payload.get("aqt")
-    else:
-        term = payload
-
-    result = None
-    if term:
-        result = getImageFromIngredient(term)
-
-    # Return a consistent JSON object the frontend expects
-    return {"image": result}
-
 
 
 if __name__ == '__main__':

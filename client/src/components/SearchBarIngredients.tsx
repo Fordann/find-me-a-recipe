@@ -31,7 +31,6 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({addIngredien
     t('search.placeholder.salmon'),
     t('search.placeholder.lemon'),
     t('search.placeholder.dill'),
-    // Recipes / cravings
     t('search.placeholder.pasta'),
     t('search.placeholder.tiramisu'),
     t('search.placeholder.ramen'),
@@ -67,18 +66,6 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({addIngredien
     }, 2500);
     return () => clearInterval(id);
   }, []);
-
-  const commitIngredient = () => {
-    const trimmed = ingredient.trim();
-    if (!trimmed) return;
-    addIngredient(trimmed);
-    setIngredient("");
-    onType && onType("");
-    if (inputRef.current) {
-      inputRef.current.value = "";
-      inputRef.current.focus();
-    }
-  };
 
   return (
     <div className={`searchBar ${isLoading ? 'hidden' : ''}`}>

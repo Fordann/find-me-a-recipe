@@ -54,20 +54,6 @@ class TestFlaskAPI(unittest.TestCase):
                                     content_type='application/json')
         self.assertIn(response.status_code, [200, 404, 502])
 
-    def test_history_endpoint(self):
-        """Test history GET endpoint"""
-        response = self.client.get('/history')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertIsInstance(data, list)
-
-    def test_history_clear_endpoint(self):
-        """Test history clear endpoint"""
-        response = self.client.post('/history/clear')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertEqual(data['status'], 'cleared')
-
     def test_favorites_get_endpoint(self):
         """Test get favorites endpoint"""
         response = self.client.get('/favorites')

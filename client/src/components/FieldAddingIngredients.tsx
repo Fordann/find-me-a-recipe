@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Fridge from "./Fridge";
 import SearchBarIngredients from "./SearchBarIngredients";
-import Ingredient from "./Ingredient";
 import FieldSearchRecipe from "./FieldSearchRecipe";
 import "../styles/FieldAddingIngredients.css";
 import type { Ingredient as IngredientType, RecipePreview } from "../types";
-import { cachedFetch } from "../utils/debounce";
 
 type FieldAddingIngredientsProps = {
     ingredients: IngredientType[];
@@ -35,7 +33,7 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
     onToggleFavoritesGrid
 }) => {
     const [isDisplayRecipes, setIsDisplayRecipes] = useState<boolean>(false);
-    const [recipes, setRecipes] = useState<RecipePreview[]>([]);
+    const [recipes, setRecipes] = useState<any>([]);
     const [typedWord, setTypedWord] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -63,34 +61,16 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
         createIngredientFromData(ingredient_value, image || "");
     };
 
-    const updateQuantityIngredient = (ingredient_id: string) => (quantity: number): void => {
-        if (quantity === 0) {
-            updateIngredients(ingredients.filter((ingredient) => ingredient.id !== ingredient_id));
-            return;
-        }
-
-        const updatedIngredients = ingredients.map((ingredient) =>
-            ingredient.id === ingredient_id ? { ...ingredient, quantity } : ingredient
-        );
-
-        updateIngredients(updatedIngredients);
-    };
-
-    const researchRecipe = (forcedQuery?: string): void => {
+    const researchRecipe = (ingredient: string) => {
         // Show fridge animation while preparing swipe; switch when ready
         setIsLoading(true);
-        const payload = {
-            language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en',
-            ingredients: {
-                aqt: forcedQuery ? forcedQuery : ingredients.map((ingredient) => ingredient.value).join(" "),
-            }
-        };
+        const language = localStorage.getItem('app_language')
         
-        cachedFetch<RecipePreview[]>("/research_recipe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+        fetch(`${language}/research_recipe/${ingredient}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json"},
         })
+            .then((response) => response.json())
             .then((data) => {
                 setRecipes(data);
                 // Swipe becomes available once deck is prepared
@@ -103,14 +83,6 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
                 setIsLoading(false);
             });
     };
-
-    // Trigger search automatically when a preset query from history is selected
-    React.useEffect(() => {
-        if (presetSearchQuery && !isDisplayRecipes) {
-            researchRecipe(presetSearchQuery);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [presetSearchQuery]);
 
     return (
         <>  
@@ -145,7 +117,6 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
             ) : !isDisplayRecipes ? (
                 <div className="add_ingredients mouse-hover container">
                     <Fridge isLoading={isLoading} />
-                    {/* Center preview removed to prioritize actual search bar */}
                     <SearchBarIngredients 
                         addIngredient={createIngredientFromName} 
                         onType={setTypedWord}

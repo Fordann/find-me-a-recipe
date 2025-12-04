@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import FilterButton from "./FilterButton";
 import Recipe from "./Recipe";
 import ResponsiveButton from "./ResponsiveButton";
 import SwipeCard from "./SwipeCard";
@@ -35,6 +34,7 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
         // Check cache first
         const cache = localStorage.getItem('recipe_images_cache');
         const imageCache = cache ? JSON.parse(cache) : {};
+
         return recipes.map(r => {
             const name = typeof r === 'string' ? r : r.name;
             const cachedImage = imageCache[name];
@@ -60,24 +60,6 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
                 return;
             }
             
-            // Stagger requests to avoid overwhelming the server
-            setTimeout(() => {
-                fetch('/detailed_recipe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en', ingredients: { aqt: recipeName } })
-                })
-                .then(res => res.json())
-                .then(recipe => {
-                    loaded++;
-                    console.log(`  ✓ [${loaded}/${favorites.length}] Preloaded: ${recipeName}`);
-                    recipeCache.set(recipeName, recipe);
-                })
-                .catch(err => {
-                    loaded++;
-                    console.error(`  ✗ [${loaded}/${favorites.length}] Failed: ${recipeName}`, err);
-                });
-            }, index * 300); // 300ms delay between each request
         });
     }, [favorites]);
 
@@ -122,10 +104,11 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
                 toLoad.map(index => {
                     const recipeItem = recipesWithImages[index];
                     const recipeName = typeof recipeItem === 'string' ? recipeItem : recipeItem.name;
-                    return fetch('/recipe_image', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: recipeName, language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en' })
+                    const language = localStorage.getItem('app_language')
+        
+                    return fetch(`${language}/recipe_image/${recipeName}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json"},
                     }).then(r => r.ok ? r.json() : null)
                       .then(data => ({ index, name: recipeName, image: data?.image }))
                       .catch(() => ({ index, name: recipeName, image: null }));
@@ -199,12 +182,14 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
         if (isFetchingMore || showFavorites) return;
         setIsFetchingMore(true);
         try {
-            const aqt = ingredients.map((ing: Ingredient) => ing.value).join(' ');
-            const response = await fetch('/research_recipe', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en', ingredients: { aqt } })
+            const ingredients_to_string = ingredients.map((ing: Ingredient) => ing.value).join(' ');
+            const language = localStorage.getItem('app_language');
+
+            const response = await fetch(`${language}/research_recipe/${ingredients_to_string}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }, 
             });
+
             if (!response.ok) throw new Error('Failed to fetch more recipes');
             const data: Array<RecipePreview> = await response.json();
             // dedupe by name
@@ -275,16 +260,16 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
             setIsRecipeChosen(true);
             return;
         }
-
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-               body: JSON.stringify({ language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en', ingredients: { aqt: recipe_name } }),
-        };
+        
 
         try {
             setLoadingRecipeName(recipe_name);
-            const response = await fetch("/detailed_recipe", requestOptions);
+            const language = localStorage.getItem('app_language');
+
+            const response = await fetch(`/${language}/detailed_recipe/${recipe_name}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }}
+            )
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
@@ -328,14 +313,7 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
                 setIsRecipeChosen(true);
                 setLoadingRecipeName(null);
             }
-            // Fire a background call to /research_recipe to append this selection to history (debounced)
-            setTimeout(() => {
-                fetch('/research_recipe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en', ingredients: { aqt: recipe_name } })
-                }).catch(() => {});
-            }, 500); // Delay to avoid multiple calls during rapid navigation
+          
         } catch (error) {
             console.error("Error fetching recipe:", error);
             setLoadingRecipeName(null);
@@ -399,14 +377,6 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
                             setRecipe(builtRecipe);
                             setIsRecipeChosen(true);
                             
-                            // Fire background call to /research_recipe (debounced)
-                            setTimeout(() => {
-                                fetch('/research_recipe', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ aqt: recipeName })
-                                }).catch(() => {});
-                            }, 500);
                         } else {
                             // Fallback: load recipe normally (will use cache if available)
                             searchRecipe(recipeName);
@@ -458,11 +428,12 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
                                                         onToggleFavorite(recipeName);
                                                         
                                                         // Preload full recipe in background (don't await)
-                                                        fetch('/detailed_recipe', {
-                                                            method: 'POST',
-                                                            headers: { 'Content-Type': 'application/json' },
-                                                            body: JSON.stringify({ language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en', ingredients: { aqt: recipeName } })
-                                                        })
+                                                        
+                                                        const language = localStorage.getItem('app_language');
+
+                                                        fetch(`/${language}/detailed_recipe/${recipeName}`, {
+                                                            method: 'GET',
+                                                            headers: { 'Content-Type': 'application/json' }})
                                                         .then(res => res.json())
                                                         .then(recipe => {
                                                             console.log('✓ Preloaded recipe for favorite:', recipeName);
@@ -512,11 +483,6 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
                     ) : (
                         <>
                             <div className="filter_btns">
-                                <FilterButton value="veggie" />
-                                <FilterButton value="meat" />
-                                <FilterButton value="no tomato" />
-                                <FilterButton value="lactose free" />
-                                <FilterButton value="with ginger" />
                                 {onBackToSearch && (
                                     <ResponsiveButton value="← Back" onClick={onBackToSearch} />
                                 )}
@@ -540,11 +506,11 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
                                                 
                                                 // Preload full recipe in background when adding to favorites
                                                 if (!isFav) {
-                                                    fetch('/detailed_recipe', {
-                                                        method: 'POST',
-                                                        headers: { 'Content-Type': 'application/json' },
-                                                        body: JSON.stringify({ language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en', ingredients: { aqt: recipeName } })
-                                                    })
+                                                    const language = localStorage.getItem('app_language');
+
+                                                    fetch(`/${language}/detailed_recipe/${recipeName}`, {
+                                                        method: 'GET',
+                                                        headers: { 'Content-Type': 'application/json' }})
                                                     .then(res => res.json())
                                                     .then(recipe => {
                                                         console.log('✓ Preloaded recipe for favorite:', recipeName);

@@ -30,15 +30,16 @@ const FavoritesGrid: React.FC<FavoritesGridProps> = ({ favorites, onRecipeClick,
     const loadBatch = async () => {
       try {
         const responses = await Promise.all(
-          toLoad.map(recipeName =>
-            fetch('/recipe_image', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: recipeName, language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en' })
+          toLoad.map(recipeName => {
+            const language = localStorage.getItem('app_language');
+        
+            return fetch(`${language}/recipe_image/${recipeName}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json"}
             }).then(r => r.ok ? r.json() : null)
               .then(data => ({ name: recipeName, image: data?.image }))
               .catch(() => ({ name: recipeName, image: null }))
-          )
+        })
         );
 
         const newImages: { [key: string]: string } = {};
@@ -134,12 +135,14 @@ const FavoritesGrid: React.FC<FavoritesGridProps> = ({ favorites, onRecipeClick,
                     if (cached) {
                       console.log('Using cached recipe for animation:', recipeName);
                       recipePromise = Promise.resolve(cached);
+                      
                     } else {
                       // Start loading the recipe in parallel with the animation
-                      recipePromise = fetch('/detailed_recipe', {
-                        method: 'POST',
+                      const language = localStorage.getItem('app_language');
+
+                      recipePromise = fetch(`/${language}/detailed_recipe/${recipeName}`, {
+                        method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ language: (localStorage.getItem('app_language') === 'fr') ? 'fr' : 'en', ingredients: { aqt: recipeName } })
                       }).then(res => res.json());
                     }
                     
