@@ -6,15 +6,15 @@ WORKDIR /app
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Copy only dependency files first (for Docker layer caching)
-COPY flask-server/pyproject.toml /app/pyproject.toml
+COPY flask_server/pyproject.toml /app/pyproject.toml
 
 # Install dependencies with uv (no venv in container)
 RUN uv pip install --system --no-cache -r pyproject.toml
 
 # Copy application code
-COPY flask-server /app
+COPY flask_server /app
 
-ENV FLASK_APP=app
+ENV FLASK_APP=src.app:app
 EXPOSE 5001
 
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5001"]

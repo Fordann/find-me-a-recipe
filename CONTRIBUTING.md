@@ -57,7 +57,7 @@ git checkout -b fix/bug-description
 cd client && npm test
 
 # Backend tests
-cd flask-server && python test_app.py
+cd flask_server && python test_app.py
 
 # Or with Docker
 docker-compose exec flask python test_app.py

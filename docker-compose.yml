@@ -2,13 +2,13 @@ services:
   flask:
     build:
       context: .
-      dockerfile: flask-server/Dockerfile
+      dockerfile: flask_server/Dockerfile
     volumes:
-      - ./flask-server:/app
+      - ./flask_server:/app
       # Dependencies are managed with uv inside the container
     environment:
       - FLASK_ENV=development
-      - FLASK_APP=app
+      - FLASK_APP=src.app:app
     ports:
       - "${FLASK_PORT:-5001}:5001"
 

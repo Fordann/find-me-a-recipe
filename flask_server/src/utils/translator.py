@@ -24,6 +24,7 @@ def translate_to_english(text: str) -> str:
     except Exception as e:
         return text
 
+
 def translate_recipe_to_english(recipe_data: dict) -> dict:
     """Translate a complete recipe from French to English"""
     translated = {}
@@ -99,3 +100,13 @@ def translate_recipe_list_to_english(recipes: list) -> list:
         }
         for r in recipes
     ]
+
+def translate_request_if_necessary(lang: str, request: str):
+    if lang == 'en':
+        return translate_to_french(request)
+    return request
+
+def translate_response_if_necessary(lang: str, response: dict):
+    if lang == 'en':
+        response = translate_recipe_to_english(response)
+    return response

@@ -25,7 +25,7 @@ async function main() {
   // Run backend tests
   console.log('Running backend tests...');
   try {
-    const flaskDir = path.join(repoRoot, 'flask-server');
+    const flaskDir = path.join(repoRoot, 'flask_server');
     if (commandExists('docker')) {
       // If using Docker, run tests in container
       try {
@@ -83,7 +83,7 @@ async function main() {
   }
 
   // 2) Prepare Python environment for Flask — uv
-  const flaskDir = path.join(repoRoot, 'flask-server');
+  const flaskDir = path.join(repoRoot, 'flask_server');
 
   if (commandExists('uv')) {
     try {
@@ -102,8 +102,9 @@ async function main() {
   // 3) Start Flask and React concurrently
   console.log('Starting Flask and React (local mode)');
 
-  // Flask command: uv run
-  const flaskCmd = 'uv run flask --app app run --host=0.0.0.0';
+  // Flask command: uv run (use module path and app variable name)
+  // app is located at `flask_server/src/app.py`
+  const flaskCmd = 'uv run flask --app src.app:app run';
 
   const flaskProc = runCommand(flaskCmd, [], { cwd: flaskDir });
   const reactProc = runCommand('npm', ['start'], { cwd: path.join(repoRoot, 'client') });

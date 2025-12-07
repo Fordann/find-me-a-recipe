@@ -44,7 +44,7 @@
 Install new Python dependency:
 
 ```bash
-cd flask-server
+cd flask_server
 uv add flask-caching
 uv sync
 ```

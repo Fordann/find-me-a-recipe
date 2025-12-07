@@ -85,7 +85,7 @@ npm install
 npm start
 
 # Backend (separate terminal)
-cd flask-server
+cd flask_server
 uv sync
 uv run flask --app app run
 ```
@@ -160,7 +160,7 @@ uv run flask --app app run
 cd client && npm test
 
 # Backend tests (unittest)
-cd flask-server && python test_app.py
+cd flask_server && python test_app.py
 
 # Or with Docker
 docker-compose exec flask python test_app.py
