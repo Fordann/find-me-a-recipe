@@ -12,7 +12,7 @@ import { recipeCache } from "../utils/recipeCache";
 
 type FieldSearchRecipeProps = {
     recipes: RecipePreview[];
-    ingredients: Ingredient[];
+    ingredients: string;
     onBackToSearch?: () => void;
     favorites?: string[];
     onToggleFavorite?: (name: string) => void;
@@ -182,7 +182,7 @@ const FieldSearchRecipe: React.FC<FieldSearchRecipeProps> = ({ recipes, ingredie
         if (isFetchingMore || showFavorites) return;
         setIsFetchingMore(true);
         try {
-            const ingredients_to_string = ingredients.map((ing: Ingredient) => ing.value).join(' ');
+            const ingredients_to_string = ingredients;
             const language = localStorage.getItem('app_language');
 
             const response = await fetch(`${language}/research_recipe/${ingredients_to_string}`, {

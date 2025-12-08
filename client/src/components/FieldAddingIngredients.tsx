@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Fridge from "./Fridge";
 import SearchBarIngredients from "./SearchBarIngredients";
 import FieldSearchRecipe from "./FieldSearchRecipe";
@@ -36,32 +36,16 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
     const [recipes, setRecipes] = useState<any>([]);
     const [typedWord, setTypedWord] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const lastWordRef = useRef<string>("");
 
-    const searchImagefromIngredientToFillFridge = async (ingredient_value: string): Promise<string | null> => {
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ingredient: ingredient_value }),
-        };
-
-        try {
-            const response = await fetch("/image_ingredient", requestOptions);
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const data = await response.json();
-            return data.image || null;
-        } catch (error) {
-            return null;
+    useEffect(() => {
+        if (typedWord !== "") {
+            lastWordRef.current = typedWord;
         }
-    };
-
-    const createIngredientFromName = async (ingredient_value: string): Promise<void> => {
-        const image = await searchImagefromIngredientToFillFridge(ingredient_value);
-        createIngredientFromData(ingredient_value, image || "");
-    };
+    }, [typedWord]);
 
     const researchRecipe = (ingredient: string) => {
+        console.log("Researching recipes with ingredient:", ingredient);
         // Show fridge animation while preparing swipe; switch when ready
         setIsLoading(true);
         const language = localStorage.getItem('app_language')
@@ -89,7 +73,7 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
             {showFavoritesGrid && onToggleFavoritesGrid ? (
                 <FieldSearchRecipe
                     recipes={recipes}
-                    ingredients={ingredients}
+                    ingredients={lastWordRef.current}
                     onBackToSearch={() => setIsDisplayRecipes(false)}
                     favorites={favorites}
                     onRecipeView={onRecipeView}
@@ -118,9 +102,8 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
                 <div className="add_ingredients mouse-hover container">
                     <Fridge isLoading={isLoading} />
                     <SearchBarIngredients 
-                        addIngredient={createIngredientFromName} 
                         onType={setTypedWord}
-                        apiCall={() => researchRecipe(typedWord)}
+                        apiCall={() => researchRecipe(lastWordRef.current)}
                         isLoading={isLoading}
                     />
                     <div className="action-row" style={{ opacity: isLoading ? 0 : 1, pointerEvents: isLoading ? 'none' : 'auto', transition: 'opacity 0.6s ease, transform 0.6s ease', transform: isLoading ? 'scale(0.95)' : 'scale(1)' }}>
@@ -134,7 +117,7 @@ const FieldAddingIngredients: React.FC<FieldAddingIngredientsProps> = ({
             ) : (
                 <FieldSearchRecipe
                     recipes={recipes}
-                    ingredients={ingredients}
+                    ingredients={lastWordRef.current}
                     onBackToSearch={() => setIsDisplayRecipes(false)}
                     favorites={favorites}
                     onRecipeView={onRecipeView}

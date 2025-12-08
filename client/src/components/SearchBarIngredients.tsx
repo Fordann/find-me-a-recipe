@@ -3,13 +3,12 @@ import { useLanguage } from "../contexts/LanguageContext";
 import "../styles/SearchBarIngredients.css";
 
 interface SearchBarIngredientsProps {
-  addIngredient: (ingredient: string) => void;
   apiCall?: () => void;
   onType?: (current: string) => void;
   isLoading?: boolean;
 }
 
-const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({addIngredient, apiCall, onType, isLoading = false }) => {
+const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({apiCall, onType, isLoading = false }) => {
   const { t } = useLanguage();
   const [ingredient, setIngredient] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);

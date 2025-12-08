@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
-import urllib.parse
 import urllib.request
 
 import re
 import ssl
 
-import asyncio
-import aiohttp
+import logging
+logger = logging.getLogger(__name__)
 
 # --- Constantes ---
 NUMBER_PAGES = 2
@@ -106,73 +105,10 @@ class Recipe:
 
 
 class Marmiton:
-    @staticmethod
-    async def searchCategory_async_only(query):
-        print(query)
-        base_url = "http://www.marmiton.org/recettes/recherche.aspx?"
-        query_url = urllib.parse.urlencode({"aqt": query})
-        
-        search_data = []
-        
-        async def scrap(html):
-            soup = BeautifulSoup(html, 'html.parser')
-            # Target links on search results page
-            links = [li.find('a')['href'] for li in soup.find_all('li', class_='search-list__item') if li.find('a', href=True)]
-            recipe_urls = []
-            for l in links:
-                if 'recette_' in l:
-                    # Convert relative URL to absolute URL
-                    recipe_urls.append(f"https://www.marmiton.org{l}") if l.startswith('/') else recipe_urls.append(l)
-            return recipe_urls
-        
-        async def fetch_scrap(session, current_page):
-            url = f"{base_url}{query_url}&page={current_page}"
-            headers = {'User-Agent': 'Mozilla/5.0'}
-            # Add ssl=False argument for aiohttp.ClientSession.get
-            async with session.get(url, headers=headers, ssl=False) as response:
-                html = await response.text()
-                return await scrap(html)
-        
-        async def get_urls_from_pages(session):
-            tasks = [fetch_scrap(session, current_page) for current_page in range(1, NUMBER_PAGES + 1)]
-            urls = await asyncio.gather(*tasks)
-            return urls
-
-        async def main():
-            # Requires aiohttp.ClientSession with ssl=False to handle potentially unverified certificates
-            async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl._create_unverified_context())) as session:
-                urls = await get_urls_from_pages(session)
-                for response_in_one_page in urls:
-                    search_data.extend(response_in_one_page)
-                return search_data
-
-        return await main()
-        
-    # --- SYNCHRONOUS WRAPPER (Called by Flask /research_recipe) ---
-    @staticmethod
-    def searchCategory(query_dict, html_content=None):
-        """Synchronous wrapper to execute async coroutine."""
-        try:
-            # Create new event loop to avoid conflicts in synchronous environment
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                return loop.run_until_complete(Marmiton.searchCategory_async_only(query_dict))
-            finally:
-                loop.close()
-        except Exception as e:
-            # You can keep print(f"Category search error: {e}") for debugging
-            return []
-
-
     # --- SYNCHRONOUS (Used by Flask /detailed_recipe to find URL) ---
     @staticmethod
-    def search(query, html_content=None):
+    def scrape(url, page_index):
         """Synchronous search of first results page."""
-        base_url = "http://www.marmiton.org/recettes/recherche.aspx?"
-        query_url = f"aqt={query}"
-        url = base_url + query_url
-
         search_data = []
 
         try:
@@ -189,25 +125,26 @@ class Marmiton:
         # Target <li class="search-list__item"> element
         for item in soup.find_all("li", class_="search-list__item"):
             data = {}
-            try:
-                title_tag = item.find("a", class_="card-content__title")
-                if title_tag:
-                    data["name"] = title_tag.get_text().strip()
-                    href = title_tag['href']
-                    data["url"] = f"https://www.marmiton.org{href}" if href.startswith('/') else href
-                    data["id"] = item.get('data-algolia-object-id', '').replace('recipe#', '')
-            except Exception:
-                pass
 
-            if data and data.get("url"):
+            title_tag = item.find("a", class_="card-content__title")
+            if title_tag:
+                data["name"] = title_tag.get_text().strip()
+                href = title_tag['href']
+                data["url"] = f"https://www.marmiton.org{href}" if href.startswith('/') else href
+                data["id"] = item.get('data-algolia-object-id', '').replace('recipe#', '')
+
+            image_tag = item.find("img", class_="image")
+            if image_tag:
+                data['image'] = image_tag.get('src')
+                       
+            if data and data.get('name') and data.get('image') and data.get('id') and data.get("url"):
                 search_data.append(data)
 
-        return search_data
+        return search_data, Marmiton._check_if_next_page_exist(soup, page_index)
         
-    # --- SCRAPING DÉTAILLÉ DE LA RECETTE (Marmiton.get) ---
 
     @classmethod
-    def get(cls, url):
+    def get_recipe_from_url(cls, url: str):
         # Use provided URL (the one that generated the HTML) for the request
         try:
             handler = urllib.request.HTTPSHandler(context=ssl._create_unverified_context())
@@ -251,6 +188,11 @@ class Marmiton:
         return data
 
     # --- DETAILED RECIPE SCRAPING METHODS ---
+    @staticmethod
+    def _check_if_next_page_exist(soup, page_number):
+        return any(str(page_number + 1) in item.get_text().strip() 
+                   for item in soup.find_all("a", class_="pagination__page-link"))
+        
 
     @staticmethod
     def _get_name(soup):

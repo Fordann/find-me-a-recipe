@@ -1,17 +1,23 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify
 import logging
-from .services.handle_recipes import services_getRecipeFromIngredient, services_getBestRecipe, services_getRecipeImageAndName
+from .services.handle_recipes import services_getRecipeCardsFromIngredient, services_getDetailedRecipeFromId
 from .services.handle_favorites import services_getFavoriteRecipes, services_addRecipeToFavoriteRecipes
-
 
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 
 
 @app.route('/<string:lang>/research_recipe/<string:ingredient_name>', methods=["GET"])
-def getRecipeFromIngredient(lang, ingredient_name):
+def getRecipeCardsFromIngredient(lang, ingredient_name):
     app.logger.info(f"Ingredient: {ingredient_name}")
-    return services_getRecipeFromIngredient(lang, ingredient_name)
+    res = services_getRecipeCardsFromIngredient(lang, ingredient_name)
+    app.logger.info(res)
+    return res
+
+
+@app.route('/<string:lang>/detailed_recipe/<string:id>', methods=["GET"])
+def getDetailedRecipeFromId(lang: str, id: str):
+    return services_getDetailedRecipeFromId(lang, id)
 
 
 @app.route('/favorites', methods=['GET'])
@@ -26,16 +32,6 @@ def addRecipeToFavoriteRecipes():
     if not recipe_name:
         return jsonify({'error': 'missing name'}), 400 
     return services_addRecipeToFavoriteRecipes(recipe_name)
-
-
-@app.route('/<string:lang>/detailed_recipe/<string:ingredient_name>', methods=["GET"])
-def getBestRecipe(lang: str, ingredient_name: str):
-    return services_getBestRecipe(lang, ingredient_name)
-
-
-@app.route('/<string:lang>/recipe_image/<string:ingredient_name>', methods=["GET"])
-def getRecipeImageAndName(lang: str, recipe_name: str):
-    return services_getRecipeImageAndName(lang, recipe_name)
 
 
 if __name__ == '__main__':
