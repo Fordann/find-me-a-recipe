@@ -1,49 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { FieldAddingIngredients } from "../components";
-import { v4 as uuidv4 } from "uuid";
-import type { Ingredient } from "../types";
+import RecipeFetcher from "../components/RecipeFetcher";
+import { SearchBarIngredients } from "../components";
+import { useNavigation } from "../contexts/PageContext";
+import useFavoriteRecipes from "../hooks/favorites";
+import { useLanguage } from "../contexts/LanguageContext";
+import {FieldSearchRecipe} from "../components";
 
-const MainPage: React.FC = () => {
-    const [ingredientsInFridge, setIngredientsInFridge] = useState<Ingredient[]>([]);
-    const [favorites, setFavorites] = useState<string[]>([]);
-    const [showFavoritesGrid, setShowFavoritesGrid] = useState<boolean>(false);
-    const [isViewingRecipe, setIsViewingRecipe] = useState<boolean>(false);
+type MainPageProps = {
 
-    // Function to add an ingredient
-    const createIngredientFromData = (ingredient_value: string, ingredient_image: string): void => {
-        setIngredientsInFridge((prevIngredients) => [
-            ...prevIngredients,
-            { id: uuidv4(), value: ingredient_value, quantity: 1, image: ingredient_image }
-        ]);
-    };
+}
+const MainPage: React.FC<MainPageProps> = () => {
+    const { t } = useLanguage();
+    const switchPage = useNavigation();
+    const {getNumberOfFavoritesRecipe} = useFavoriteRecipes();
+    const [ingredientChosenByUser, setIngredientChosenByUser] = useState<string>("");
+    const [numberOfFavoritesRecipe, setNumberOfFavoritesRecipe] = useState<number>(0);
 
-    // Function to update ingredients
-    const updateIngredients = (ingredients: Ingredient[]): void => {
-        setIngredientsInFridge(ingredients);
-    };
-
-    const refreshFavorites = async () => {
-        try {
-            const r = await fetch('/favorites');
-            const data = await r.json();
-            setFavorites(Array.isArray(data) ? data : []);
-        } catch (e) {}
-    };
-
-    useEffect(() => { refreshFavorites(); }, []);
+    useEffect(() => {
+        const result = async () => {
+            const number = await getNumberOfFavoritesRecipe();
+            setNumberOfFavoritesRecipe(number);
+        };
+        result();
+    }, [getNumberOfFavoritesRecipe]);
 
     return (
-        <FieldAddingIngredients
-            updateIngredients={updateIngredients}
-            createIngredientFromData={createIngredientFromData}
-            ingredients={ingredientsInFridge}
-            favorites={favorites}
-            onFavoritesChange={setFavorites}
-            refreshFavorites={refreshFavorites}
-            onRecipeView={setIsViewingRecipe}
-            showFavoritesGrid={showFavoritesGrid}
-            onToggleFavoritesGrid={() => setShowFavoritesGrid(!showFavoritesGrid)}
-        />
+            <>  
+                <RecipeFetcher
+                    ingredientChosenByUser={ingredientChosenByUser}
+                />
+                { !ingredientChosenByUser &&
+                    <div className="add_ingredients mouse-hover container">  
+                        <SearchBarIngredients 
+                            setIngredientToSearch={setIngredientChosenByUser}
+                        />
+                        <div className="action-row" style={{ pointerEvents: 'auto', transition: 'opacity 0.6s ease, transform 0.6s ease', transform: 'scale(1)' }}>
+                                
+                                <button type="button" className="btn_favorites" onClick={()=> switchPage('favorites_page')}>
+                                {t('button.myFavorites')} {numberOfFavoritesRecipe ? `(${numberOfFavoritesRecipe})` : ''}
+                            </button>
+                        </div>
+                    </div>
+                }  
+            </>
     );
 };
 

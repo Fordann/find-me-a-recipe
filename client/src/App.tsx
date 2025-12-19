@@ -1,22 +1,44 @@
 import React from "react";
-import MainPage from "./pages/MainPage";
 import HomePage from "./pages/HomePage";
+import MainPage from "./pages/MainPage";
+import FavoritePage from "./pages/FavoritesPage";
+import RecipePage from "./pages/RecipePage";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { NavigationProvider, useCurrentPage } from "./contexts/PageContext";
 import "./styles/App.css";
+
+const Page: React.FC = () => {
+    const page = useCurrentPage();
+    
+    const renderPage = () => {
+        switch (page) {
+            case "home_page":
+                return <HomePage />
+            case "main_page":
+                return <MainPage />
+            case "favorites_page":
+                return <FavoritePage />
+            case "recipe_page":
+                return <RecipePage/>
+            default:
+                return <HomePage />
+        };
+    }
+    return (
+        renderPage()
+    )
+}
 
 // Possible page types definition
 const App: React.FC = () => {
-    const [page, setPage] = React.useState<"home_page"|"main_page">("home_page");
     return (
         <LanguageProvider>
             <div className="App">
                 <header className="App-header">   
                     <div className="container-app">
-                        {page === "home_page" ? (
-                            <HomePage switchPage={setPage} />
-                        ) : (
-                            <MainPage />
-                        )}
+                        <NavigationProvider>
+                            <Page /> 
+                        </NavigationProvider>
                     </div>
                 </header>
             </div>

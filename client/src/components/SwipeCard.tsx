@@ -11,8 +11,8 @@ interface SwipeCardProps {
   };
   onSwipeLeft: () => void;
   onSwipeRight: () => void;
-  zIndex: number;
-  isTop: boolean;
+  zIndex?: number;
+  isTop?: boolean;
 }
 
 const SwipeCard: React.FC<SwipeCardProps> = ({
@@ -184,7 +184,6 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
   const handleDragEnd = useCallback(() => {
     if (!isTop || !cardRef.current) return;
-    console.log('Drag end', dragState.current.offsetX);
     setIsDragging(false);
 
     const threshold = 120;
@@ -193,10 +192,9 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     if (Math.abs(offsetX) > threshold) {
       // Swipe detected
       const direction = offsetX > 0 ? 'right' : 'left';
-      console.log('Swipe detected:', direction);
+
       animateSwipeOut(direction);
     } else {
-      console.log('Returning to center');
       // Return to center with animation
       anime({
         targets: cardRef.current,
@@ -301,7 +299,6 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
   const handleDragStart = (clientX: number, clientY: number) => {
     if (!isTop) return;
-    console.log('Drag start', recipe.title);
     setIsDragging(true);
     dragState.current.startX = clientX;
     dragState.current.startY = clientY;

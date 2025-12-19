@@ -1,16 +1,17 @@
 import React from "react";
-import { ResponsiveButton } from "../components";
+import { StyledButton } from "../components";
 import { useLanguage } from "../contexts/LanguageContext";
 import LanguageSwitch from "../components/LanguageSwitch";
+import { useNavigation } from "../contexts/PageContext";
 import "../styles/HomePage.css";
 
-// Props type definition
 type HomePageProps = {
-    switchPage: (page: "home_page" | "main_page") => void;
+
 };
 
-const HomePage: React.FC<HomePageProps> = ({ switchPage }) => {
+const HomePage: React.FC<HomePageProps> = () => {
     const { t } = useLanguage();
+    const switchPage = useNavigation();
 
     return (
         <div className="home-page">
@@ -21,7 +22,7 @@ const HomePage: React.FC<HomePageProps> = ({ switchPage }) => {
                     <LanguageSwitch />
                 </div>
                 <div className="home-start-row">
-                    <ResponsiveButton onClick={() => switchPage("main_page")} value={t('home.start')} />
+                    <StyledButton onClick={() => switchPage("main_page")} value={t('home.start')} />
                 </div>
             </div>
         </div>

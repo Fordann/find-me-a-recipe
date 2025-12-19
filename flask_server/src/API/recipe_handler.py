@@ -3,7 +3,7 @@ from collections import deque
 from .recipe_scraper import Marmiton
 from .scheduler import Scheduler
 
-MINIMUN_STOCK_MAIN_QUEUE = 15
+MINIMUN_STOCK_MAIN_QUEUE = 15 #prendre toutes les recettes de la page si nb de recettes pas défini
 MINIMUN_STOCK_BACKUP_QUEUE = 20
 
 class RecipeHandler:
@@ -28,7 +28,7 @@ class RecipeHandler:
 
         for recipe in recipes:
             if recipe['id'] not in self.cache:
-                self.cache[recipe['id']] = { 'name': recipe['name'], 'image': recipe['image'], 'url': recipe['url']}
+                self.cache[recipe['id']] = { 'title': recipe['title'], 'image': recipe['image'], 'url': recipe['url']}
                 result.append(recipe['id'])      
         return result
     

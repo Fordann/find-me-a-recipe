@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import anime from 'animejs';
 import '../styles/FavoritesGrid.css';
 import { recipeCache } from '../utils/recipeCache';
+import useRecipes from '../hooks/recipes';
 
 interface FavoritesGridProps {
   favorites: string[];
@@ -17,6 +18,7 @@ const FavoritesGrid: React.FC<FavoritesGridProps> = ({ favorites, onRecipeClick,
     return cache ? JSON.parse(cache) : {};
   });
   const loadingRef = React.useRef<Set<string>>(new Set());
+  const {getWholeRecipeFromID} = useRecipes();
 
   // Batch load all favorite images with cache
   React.useEffect(() => {
@@ -139,11 +141,7 @@ const FavoritesGrid: React.FC<FavoritesGridProps> = ({ favorites, onRecipeClick,
                     } else {
                       // Start loading the recipe in parallel with the animation
                       const language = localStorage.getItem('app_language');
-
-                      recipePromise = fetch(`/${language}/detailed_recipe/${recipeName}`, {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                      }).then(res => res.json());
+                      recipePromise = getWholeRecipeFromID(recipeName)
                     }
                     
                     // Animate the clone to full screen with the same styling as recipe-hero-image

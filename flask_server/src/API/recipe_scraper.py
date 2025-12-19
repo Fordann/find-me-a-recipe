@@ -128,7 +128,7 @@ class Marmiton:
 
             title_tag = item.find("a", class_="card-content__title")
             if title_tag:
-                data["name"] = title_tag.get_text().strip()
+                data["title"] = title_tag.get_text().strip()
                 href = title_tag['href']
                 data["url"] = f"https://www.marmiton.org{href}" if href.startswith('/') else href
                 data["id"] = item.get('data-algolia-object-id', '').replace('recipe#', '')
@@ -137,7 +137,7 @@ class Marmiton:
             if image_tag:
                 data['image'] = image_tag.get('src')
                        
-            if data and data.get('name') and data.get('image') and data.get('id') and data.get("url"):
+            if data and data.get('title') and data.get('image') and data.get('id') and data.get("url"):
                 search_data.append(data)
 
         return search_data, Marmiton._check_if_next_page_exist(soup, page_index)
@@ -157,30 +157,30 @@ class Marmiton:
 
         soup = BeautifulSoup(html_content, 'html.parser')
         elements = [
-            {"name": "images", "default_value": []},
-            {"name": "name", "default_value": ""},
-            {"name": "ingredients", "default_value": []},
-            {"name": "author_tip", "default_value": ""},
-            {"name": "steps", "default_value": []},
-            {"name": "rate", "default_value": ""},
-            {"name": "difficulty", "default_value": ""},
-            {"name": "budget", "default_value": ""},
-            {"name": "cook_time", "default_value": ""},
-            {"name": "prep_time", "default_value": ""},
-            {"name": "total_time", "default_value": ""},
-            {"name": "recipe_quantity", "default_value": ""},
-            {"name": "nb_comments", "default_value": 0},
+            {"title": "images", "default_value": []},
+            {"title": "title", "default_value": ""},
+            {"title": "ingredients", "default_value": []},
+            {"title": "author_tip", "default_value": ""},
+            {"title": "steps", "default_value": []},
+            {"title": "rate", "default_value": ""},
+            {"title": "difficulty", "default_value": ""},
+            {"title": "budget", "default_value": ""},
+            {"title": "cook_time", "default_value": ""},
+            {"title": "prep_time", "default_value": ""},
+            {"title": "total_time", "default_value": ""},
+            {"title": "recipe_quantity", "default_value": ""},
+            {"title": "nb_comments", "default_value": 0},
         ]
 
         data = {"url": url}
         for element in elements:
             try:
-                data[element["name"]] = getattr(cls, "_get_" + element["name"])(soup)
+                data[element["title"]] = getattr(cls, "_get_" + element["title"])(soup)
             except Exception:
-                data[element["name"]] = element["default_value"]
+                data[element["title"]] = element["default_value"]
             
         try:
-            author_tag = soup.find('span', class_='recipe-author-note__author-name')
+            author_tag = soup.find('span', class_='recipe-author-note__author-title')
             data['author'] = author_tag.get_text().strip() if author_tag else 'Anonyme'
         except:
             data['author'] = 'Anonyme'
@@ -208,16 +208,16 @@ class Marmiton:
             try:
                 quantity_tag = item.find("span", class_="card-ingredient-quantity")
                 unit_tag = item.find("span", class_="unit")
-                name_tag = item.find("span", class_="ingredient-name")
+                name_tag = item.find("span", class_="ingredient-title")
                 
                 # Extract values or empty strings
                 quantity = quantity_tag.find("span", class_="count").get_text().strip() if quantity_tag and quantity_tag.find("span", class_="count") else ""
                 unit = unit_tag.get_text().strip() if unit_tag else ""
-                name = name_tag.get_text().strip() if name_tag else ""
+                title = name_tag.get_text().strip() if name_tag else ""
                 
-                # Add quantity, unit and ingredient name
-                if name:
-                    ingredients_list.append((quantity, unit, name))
+                # Add quantity, unit and ingredient title
+                if title:
+                    ingredients_list.append((quantity, unit, title))
             except AttributeError:
                 # Ignore malformed ingredient divs
                 continue
@@ -366,7 +366,7 @@ class Marmiton:
     @staticmethod
     def displayRecipe(detailed_recipe):
         # (This method is not used by Flask API, but kept for completeness)
-        print(f"## {detailed_recipe.get('name', 'N/A')}\n") 
+        print(f"## {detailed_recipe.get('title', 'N/A')}\n") 
         print(f"Rated {detailed_recipe.get('rate', 'N/A')}/5 by {detailed_recipe.get('nb_comments', 0)} people.")
         print(f"Cook time: {detailed_recipe.get('cook_time', 'N/A')} / Prep time: {detailed_recipe.get('prep_time', 'N/A')} / Total time: {detailed_recipe.get('total_time', 'N/A')}.")
         print(f"Difficulty: '{detailed_recipe.get('difficulty', 'N/A')}'")

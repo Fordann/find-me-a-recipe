@@ -14,6 +14,9 @@ def write_cookie_list(resp, name: str, values: list):
 def services_getFavoriteRecipes():
     return jsonify(read_cookie_list('favorites'))
 
+def services_getNumberFavoriteRecipes():
+    return jsonify({'number': len(read_cookie_list('favorites'))})
+
 def services_addRecipeToFavoriteRecipes(recipe_name: str):
     favs = read_cookie_list('favorites')
     if recipe_name in favs:

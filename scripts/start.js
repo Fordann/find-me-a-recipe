@@ -104,7 +104,7 @@ async function main() {
 
   // Flask command: uv run (use module path and app variable name)
   // app is located at `flask_server/src/app.py`
-  const flaskCmd = 'uv run flask --app src.app:app run';
+  const flaskCmd = 'uv run flask --app src.app:app run --host=0.0.0.0 --debug';
 
   const flaskProc = runCommand(flaskCmd, [], { cwd: flaskDir });
   const reactProc = runCommand('npm', ['start'], { cwd: path.join(repoRoot, 'client') });

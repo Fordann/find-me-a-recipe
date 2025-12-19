@@ -1,12 +1,5 @@
 // Shared TypeScript types for the client
 
-export type Ingredient = {
-  id: string;
-  value: string;
-  quantity: number;
-  image: string;
-};
-
 export type Recipe = {
   name: string;
   image: string;
@@ -23,7 +16,7 @@ export type Recipe = {
 };
 
 export type RecipePreview = {
-  name: string;
+  title: string;
   image: string;
 };
 

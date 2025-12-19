@@ -3,12 +3,11 @@ import { useLanguage } from "../contexts/LanguageContext";
 import "../styles/SearchBarIngredients.css";
 
 interface SearchBarIngredientsProps {
-  apiCall?: () => void;
-  onType?: (current: string) => void;
   isLoading?: boolean;
+  setIngredientToSearch: (ingredient: string) => void;
 }
 
-const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({apiCall, onType, isLoading = false }) => {
+const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = false, setIngredientToSearch}) => {
   const { t } = useLanguage();
   const [ingredient, setIngredient] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -42,7 +41,6 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({apiCall, onT
     event.preventDefault();
     const value = event.target.value;
     setIngredient(value);
-    onType && onType(value);
     
     setIsTyping(true);
     if (typingTimeoutRef.current) {
@@ -86,9 +84,9 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({apiCall, onT
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
-              const trimmed = ingredient.trim();
-              if (trimmed && apiCall) {
-                apiCall();
+              const trimmed_ingredient = ingredient.trim();
+              if (trimmed_ingredient) {
+                setIngredientToSearch(trimmed_ingredient);
               }
             }
           }}

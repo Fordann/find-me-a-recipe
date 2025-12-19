@@ -63,7 +63,7 @@ class TestFlaskAPI(unittest.TestCase):
 
     def test_favorites_toggle_endpoint(self):
         """Test toggle favorite endpoint"""
-        response = self.client.post('/favorites/toggle',
+        response = self.client.post('/favorites',
                                     json={'name': 'Test Recipe'},
                                     content_type='application/json')
         self.assertEqual(response.status_code, 200)
@@ -73,7 +73,7 @@ class TestFlaskAPI(unittest.TestCase):
 
     def test_favorites_toggle_missing_name(self):
         """Test toggle favorite with missing name returns error"""
-        response = self.client.post('/favorites/toggle',
+        response = self.client.post('/favorites',
                                     json={},
                                     content_type='application/json')
         self.assertEqual(response.status_code, 400)
