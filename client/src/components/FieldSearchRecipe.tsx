@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Recipe from "./Recipe";
-import StyledButton from "./StyledButton";
+import StyledButton from "./buttons/StyledButton";
 import SwipeCard from "./SwipeCard";
 import "../styles/FieldSearchRecipe.css";
 import "../styles/RecipeList.css";

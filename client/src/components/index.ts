@@ -6,5 +6,5 @@ export { default as FavoritesGrid } from './FavoritesGrid';
 
 // existing smaller components
 export { default as Recipe } from './Recipe';
-export { default as StyledButton } from './StyledButton';
+export { default as StyledButton } from './buttons/StyledButton';
 export { default as SwipeCard } from './SwipeCard';

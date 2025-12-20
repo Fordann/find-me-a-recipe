@@ -29,7 +29,7 @@ export const useCurrentPage = () => {
     if (context === undefined) {
         throw new Error("useCurrentPage must be used with PageContext provider");
     }
-    return context;
+    return context as PageType;
 }
 
 export const useNavigation = () => {
@@ -38,4 +38,23 @@ export const useNavigation = () => {
         throw new Error("useNavigation Context must be used with SetPage provider");
     }
     return context;
+}
+
+export const useNavigationBack = () => {
+    const current_page = useContext(PageContext);
+
+    if (!current_page) {
+        throw new Error("useCurrentPage must be accessible");
+    }
+
+    const navigationMap: Map<PageType, PageType> = new Map([
+            ["favorites_page", "main_page"],
+            ["recipe_page", 'favorites_page']
+        ])
+
+    const context = useContext(SetPageContext);
+    if (context === undefined) {
+        throw new Error("useNavigation Context must be used with SetPage provider");
+    }
+    return () => context(navigationMap.get(current_page));
 }

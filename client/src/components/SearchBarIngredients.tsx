@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useSearch } from "../contexts/IngredientContext";
 import "../styles/SearchBarIngredients.css";
 
 interface SearchBarIngredientsProps {
   isLoading?: boolean;
-  setIngredientToSearch: (ingredient: string) => void;
 }
 
-const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = false, setIngredientToSearch}) => {
+const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = false}) => {
   const { t } = useLanguage();
-  const [ingredient, setIngredient] = useState<string>("");
+  const [wordTyped, setWordTyped] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number>(0);
+  const setSearch = useSearch();
 
   const rotatingPlaceholders = [
     // Ingredients
@@ -40,16 +41,22 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     event.preventDefault();
     const value = event.target.value;
-    setIngredient(value);
+    setWordTyped(value);
     
     setIsTyping(true);
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
+    
     typingTimeoutRef.current = setTimeout(() => {
       setIsTyping(false);
     }, 150);
   };
+
+  useEffect(() => {
+    return () => { 
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [])
 
   useEffect(() => {
     if (inputRef.current) {
@@ -62,14 +69,22 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = 
       setPlaceholderIndex((i) => (i + 1) % rotatingPlaceholders.length);
     }, 2500);
     return () => clearInterval(id);
-  }, []);
+  }, [rotatingPlaceholders.length]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed_ingredient = wordTyped.trim();
+    if (trimmed_ingredient) {
+      setSearch(trimmed_ingredient);
+    }
+  }
 
   return (
     <div className={`searchBar ${isLoading ? 'hidden' : ''}`}>
       <div className="hero-cta">
         <span className="hero-text">{t('search.hero')}</span>
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <span className="arrow-indicator">↳</span>
         <input
           ref={inputRef}
@@ -80,16 +95,7 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = 
           onChange={handleChange}
           autoComplete="off"
           placeholder={rotatingPlaceholders[placeholderIndex]}
-          value={ingredient}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              const trimmed_ingredient = ingredient.trim();
-              if (trimmed_ingredient) {
-                setIngredientToSearch(trimmed_ingredient);
-              }
-            }
-          }}
+          value={wordTyped}
         />
       </form>
     </div>

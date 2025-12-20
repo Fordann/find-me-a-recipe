@@ -3,16 +3,18 @@ import React, { useEffect, useState } from "react";
 import { RecipePreview } from "../types";
 import useRecipes from "../hooks/recipes";
 import SwipeCard from "./SwipeCard";
+import { useIngredient } from "../contexts/IngredientContext";
 
 type RecipeFetcherProps = {
-    ingredientChosenByUser: string;
+
 };
 
-const RecipeFetcher: React.FC<RecipeFetcherProps> = ({ ingredientChosenByUser }) => { 
+const RecipeFetcher: React.FC<RecipeFetcherProps> = () => { 
     const [recipes, setRecipes] = React.useState<Array<RecipePreview>>([]);
     const { getRecipesSummaryFromIngredient } = useRecipes();
     const [currentIndex, setCurrentIndex] = useState<number>(0);
-    
+    const ingredientChosenByUser = useIngredient();
+
     const isEnoughRecipesFetchedForDisplay = recipes.length - currentIndex > 2;
     const needMoreRecipes = recipes.length - currentIndex < 5;
 
@@ -42,6 +44,7 @@ const RecipeFetcher: React.FC<RecipeFetcherProps> = ({ ingredientChosenByUser })
                     <>
                         <div className="swipe-container">
                             {
+                                // recipes are displayed as a deck of cards, load 3 cards and stack them with zIndex
                                 [0, 1, 2].map((offset) => {
                                     const recipe = recipes[currentIndex + offset];
                                     const recipeName = recipe.title;

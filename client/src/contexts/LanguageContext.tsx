@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { recipeCache } from '../utils/recipeCache';
+import React, { createContext, useContext, useState } from 'react';
 
 type Language = 'en' | 'fr';
 
@@ -69,9 +68,8 @@ const translations = {
     'button.listMode': 'List Mode',
     'button.swipeMode': 'Swipe Mode',
     'button.recipes': 'Recipes',
-    'button.favorites': 'Favorites',
     'button.myFavorites': '❤️ My Favorites',
-    
+    'button.previousPage': 'Return',
     // Swipe indicators
     'swipe.like': 'LIKE',
     'swipe.pass': 'PASS',
@@ -135,8 +133,8 @@ const translations = {
     'button.listMode': 'Mode Liste',
     'button.swipeMode': 'Mode Swipe',
     'button.recipes': 'Recettes',
-    'button.favorites': 'Favoris',
     'button.myFavorites': '❤️ Mes Favoris',
+    'button.previousPage': 'Retour',
     
     // Swipe indicators
     'swipe.like': "J'AIME",
@@ -147,17 +145,10 @@ const translations = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('app_language');
-    return (saved === 'fr' || saved === 'en') ? saved : 'en';
-  });
+  const [language, setLanguageState] = useState<Language>('fr');
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('app_language', lang);
-    // Clear caches to prevent serving wrong language content
-    recipeCache.clear();
-    localStorage.removeItem('recipe_images_cache');
   };
 
   const t = (key: string): string => {

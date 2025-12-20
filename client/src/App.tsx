@@ -5,6 +5,8 @@ import FavoritePage from "./pages/FavoritesPage";
 import RecipePage from "./pages/RecipePage";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { NavigationProvider, useCurrentPage } from "./contexts/PageContext";
+import { IngredientProvider } from "./contexts/IngredientContext";
+
 import "./styles/App.css";
 
 const Page: React.FC = () => {
@@ -37,7 +39,9 @@ const App: React.FC = () => {
                 <header className="App-header">   
                     <div className="container-app">
                         <NavigationProvider>
-                            <Page /> 
+                            <IngredientProvider>
+                                <Page /> 
+                            </IngredientProvider>
                         </NavigationProvider>
                     </div>
                 </header>
