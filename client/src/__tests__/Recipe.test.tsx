@@ -1,8 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { LanguageProvider } from '../contexts/LanguageContext';
+import { Provider } from 'react-redux';
+import { store } from '../store/store';
 import Recipe from '../components/Recipe';
+
+// animejs is used for animations in the component; mock it to avoid DOM side-effects in tests
+jest.mock('animejs', () => ({
+  __esModule: true,
+  default: () => ({})
+}));
 
 const mockRecipe = {
   name: 'Test Recipe',
@@ -30,9 +37,9 @@ const mockRecipe = {
 describe('Recipe Component', () => {
   const renderWithLanguage = (component: React.ReactElement) => {
     return render(
-      <LanguageProvider>
+      <Provider store={store}>
         {component}
-      </LanguageProvider>
+      </Provider>
     );
   };
 

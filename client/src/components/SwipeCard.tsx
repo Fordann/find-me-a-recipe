@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from '../store/slices/language/LanguageExtension';
 import anime from 'animejs';
 import '../styles/SwipeCard.css';
 
@@ -22,10 +22,10 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
   zIndex,
   isTop,
 }) => {
-  const { t } = useLanguage();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const dragState = useRef({ startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
+  const t = useTranslation();
 
   useEffect(() => {
     // Reset position when card changes

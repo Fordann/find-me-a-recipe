@@ -9,7 +9,6 @@ import type { Recipe as RecipeType, RecipePreview } from "../types";
 import anime from "animejs";
 import { recipeCache } from "../utils/recipeCache";
 import useRecipes from "../hooks/recipes";
-import { useLanguage } from "../contexts/LanguageContext";
 import Fridge from "./Fridge";
 
 type FieldSearchRecipeProps = {

@@ -1,7 +1,7 @@
 export { default as Fridge } from './Fridge';
 export { default as Ingredient } from './Ingredient';
 export { default as SearchBarIngredients } from './SearchBarIngredients';
-export { default as FieldSearchRecipe } from './FieldSearchRecipe';
+export { default as RecipeFetcher} from './RecipeFetcher';
 export { default as FavoritesGrid } from './FavoritesGrid';
 
 // existing smaller components

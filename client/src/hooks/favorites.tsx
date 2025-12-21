@@ -1,9 +1,9 @@
-import { useLanguage } from "../contexts/LanguageContext";
+import { useSelector } from "react-redux";
 import { useCallback } from "react";
+import { RootState } from "../store/store";
 
 const useFavoriteRecipes = () => {
-    const {language} = useLanguage();
-
+    const language = useSelector((state: RootState) => state.language.value) 
 
     //Will fetch the summary (image + title) of recipes saved in favorites
     const getFavoritesRecipe = useCallback(() => {

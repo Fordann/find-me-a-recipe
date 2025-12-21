@@ -1,8 +1,9 @@
 import React from "react";
 import { StyledButton } from "../components";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useTranslation } from "../store/slices/language/LanguageExtension";
 import LanguageSwitch from "../components/LanguageSwitch";
-import { useNavigation } from "../contexts/PageContext";
+import { useDispatch } from "react-redux";
+import { navigate } from "../store/slices/PageSlice";
 import "../styles/HomePage.css";
 
 type HomePageProps = {
@@ -10,8 +11,8 @@ type HomePageProps = {
 };
 
 const HomePage: React.FC<HomePageProps> = () => {
-    const { t } = useLanguage();
-    const switchPage = useNavigation();
+    const t = useTranslation();
+    const dispatch = useDispatch();
 
     return (
         <div className="home-page">
@@ -22,7 +23,7 @@ const HomePage: React.FC<HomePageProps> = () => {
                     <LanguageSwitch />
                 </div>
                 <div className="home-start-row">
-                    <StyledButton onClick={() => switchPage("main_page")} value={t('home.start')} />
+                    <StyledButton onClick={() => dispatch(navigate("main_page"))} value={t('home.start')} />
                 </div>
             </div>
         </div>

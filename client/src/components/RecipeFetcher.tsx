@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { RecipePreview } from "../types";
 import useRecipes from "../hooks/recipes";
 import SwipeCard from "./SwipeCard";
-import { useIngredient } from "../contexts/IngredientContext";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 type RecipeFetcherProps = {
 
@@ -13,7 +14,7 @@ const RecipeFetcher: React.FC<RecipeFetcherProps> = () => {
     const [recipes, setRecipes] = React.useState<Array<RecipePreview>>([]);
     const { getRecipesSummaryFromIngredient } = useRecipes();
     const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const ingredientChosenByUser = useIngredient();
+    const ingredientChosenByUser = useSelector((state: RootState) => state.ingredient.value);
 
     const isEnoughRecipesFetchedForDisplay = recipes.length - currentIndex > 2;
     const needMoreRecipes = recipes.length - currentIndex < 5;
@@ -33,11 +34,11 @@ const RecipeFetcher: React.FC<RecipeFetcherProps> = () => {
             fetchRecipes();  
         }
         
-    }, [ingredientChosenByUser, currentIndex, getRecipesSummaryFromIngredient]); 
+    }, [ingredientChosenByUser, currentIndex, getRecipesSummaryFromIngredient, needMoreRecipes]); 
     
     return (
         <>    
-        <Fridge isLoading={ingredientChosenByUser != "" && !isEnoughRecipesFetchedForDisplay} />
+        <Fridge isLoading={ingredientChosenByUser !== "" && !isEnoughRecipesFetchedForDisplay} />
         {   
             ingredientChosenByUser && isEnoughRecipesFetchedForDisplay && 
                 <div className="search mouse-hover container">

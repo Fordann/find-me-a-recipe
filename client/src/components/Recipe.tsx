@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import anime from "animejs";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useTranslation } from "../store/slices/language/LanguageExtension";
 import "../styles/Recipe.css";
 
 // Define recipe properties types
@@ -23,7 +23,7 @@ interface RecipeProps {
 }
 
 const RecipeComponent: React.FC<RecipeProps> = ({ value: recipe, onBack }) => {
-  const { t } = useLanguage();
+  const t = useTranslation();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const [currentView, setCurrentView] = React.useState<'hero' | 'steps'>('hero');

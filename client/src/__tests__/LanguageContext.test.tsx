@@ -1,73 +1,47 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { LanguageProvider, useLanguage } from '../contexts/LanguageContext';
+import { Provider, useDispatch } from 'react-redux';
+import { store } from '../store/store';
+import { switched } from '../store/slices/language/LanguageSlice';
+import { useTranslation } from '../store/slices/language/LanguageExtension';
 
-// Test component to use the hook
-function TestComponent() {
-  const { language, t, setLanguage } = useLanguage();
+// Component exercising the translation hook and toggle action
+const TestTranslationComponent = () => {
+  const t = useTranslation();
+  const dispatch = useDispatch();
+
   return (
     <div>
-      <div data-testid="language">{language}</div>
-      <div data-testid="translation">{t('home.welcome')}</div>
-      <button onClick={() => setLanguage('fr')}>Switch to French</button>
-      <button onClick={() => setLanguage('en')}>Switch to English</button>
+      <div data-testid="welcome">{t('home.welcome')}</div>
+      <div data-testid="missing">{t('nonexistent.key')}</div>
+      <button data-testid="toggle" onClick={() => dispatch(switched())}>
+        toggle
+      </button>
     </div>
   );
-}
+};
 
-// Test component to test missing keys
-function TestMissingKeyComponent() {
-  const { t } = useLanguage();
-  return (
-    <div>
-      <div data-testid="missing-key">{t('nonexistent.key')}</div>
-    </div>
-  );
-}
-
-describe('LanguageContext', () => {
-  test('provides default language', () => {
+describe('useTranslation (Redux)', () => {
+  test('returns French by default and falls back to key when missing', () => {
     render(
-      <LanguageProvider>
-        <TestComponent />
-      </LanguageProvider>
+      <Provider store={store}>
+        <TestTranslationComponent />
+      </Provider>
     );
-    
-    const languageElement = screen.getByTestId('language');
-    expect(languageElement.textContent).toMatch(/en|fr/);
+
+    expect(screen.getByTestId('welcome')).toHaveTextContent('Bienvenue sur Find Me a Recipe');
+    expect(screen.getByTestId('missing')).toHaveTextContent('nonexistent.key');
   });
 
-  test('provides translation function', () => {
+  test('toggles language when dispatching switched', () => {
     render(
-      <LanguageProvider>
-        <TestComponent />
-      </LanguageProvider>
+      <Provider store={store}>
+        <TestTranslationComponent />
+      </Provider>
     );
-    
-    const translationElement = screen.getByTestId('translation');
-    expect(translationElement.textContent).toBeTruthy();
-  });
 
-  test('translation returns key if not found', () => {
-    render(
-      <LanguageProvider>
-        <TestMissingKeyComponent />
-      </LanguageProvider>
-    );
-    
-    const missingKeyElement = screen.getByTestId('missing-key');
-    expect(missingKeyElement.textContent).toBe('nonexistent.key');
-  });
-});
+    fireEvent.click(screen.getByTestId('toggle'));
 
-describe('Translation Keys', () => {
-  test('has required translation keys for English', () => {
-    render(
-      <LanguageProvider>
-        <TestComponent />
-      </LanguageProvider>
-    );
-    
-    expect(screen.getByTestId('translation')).toBeInTheDocument();
+    expect(screen.getByTestId('welcome')).toHaveTextContent('Welcome to Find Me a Recipe');
   });
 });

@@ -1,16 +1,16 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import HomePage from "./pages/HomePage";
 import MainPage from "./pages/MainPage";
 import FavoritePage from "./pages/FavoritesPage";
 import RecipePage from "./pages/RecipePage";
-import { LanguageProvider } from "./contexts/LanguageContext";
-import { NavigationProvider, useCurrentPage } from "./contexts/PageContext";
-import { IngredientProvider } from "./contexts/IngredientContext";
+import { Provider } from "react-redux";
+import { RootState, store } from "./store/store";
 
 import "./styles/App.css";
 
 const Page: React.FC = () => {
-    const page = useCurrentPage();
+    const page = useSelector((state: RootState) => state.page.value);
     
     const renderPage = () => {
         switch (page) {
@@ -34,19 +34,15 @@ const Page: React.FC = () => {
 // Possible page types definition
 const App: React.FC = () => {
     return (
-        <LanguageProvider>
+        <Provider store={store}>
             <div className="App">
                 <header className="App-header">   
                     <div className="container-app">
-                        <NavigationProvider>
-                            <IngredientProvider>
-                                <Page /> 
-                            </IngredientProvider>
-                        </NavigationProvider>
+                        <Page /> 
                     </div>
                 </header>
             </div>
-        </LanguageProvider>
+        </Provider>
     );
 };
 

@@ -1,8 +1,9 @@
-import { useLanguage } from "../contexts/LanguageContext"
+import { useSelector } from "react-redux";
 import { useCallback } from "react";
+import { RootState } from "../store/store";
 
 const useRecipes = () => {
-    const { language } = useLanguage();
+    const language = useSelector((state: RootState) => state.language.value) 
 
     const getRecipesSummaryFromIngredient = useCallback((ingredient_name: string) => {
         return fetch(

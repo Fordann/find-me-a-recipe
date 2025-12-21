@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLanguage } from "../contexts/LanguageContext";
-import { useSearch } from "../contexts/IngredientContext";
 import "../styles/SearchBarIngredients.css";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "../store/slices/language/LanguageExtension";
+import { update } from "../store/slices/IngredientSlice";
 
 interface SearchBarIngredientsProps {
   isLoading?: boolean;
 }
 
 const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = false}) => {
-  const { t } = useLanguage();
+  const t = useTranslation();
   const [wordTyped, setWordTyped] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number>(0);
-  const setSearch = useSearch();
+  const dispatch = useDispatch();
 
   const rotatingPlaceholders = [
     // Ingredients
@@ -75,7 +76,7 @@ const SearchBarIngredients: React.FC<SearchBarIngredientsProps> = ({isLoading = 
     e.preventDefault();
     const trimmed_ingredient = wordTyped.trim();
     if (trimmed_ingredient) {
-      setSearch(trimmed_ingredient);
+      dispatch(update(trimmed_ingredient));
     }
   }
 
