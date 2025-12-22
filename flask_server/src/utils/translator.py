@@ -26,6 +26,7 @@ def translate_to_english(text: str) -> str:
 
 
 def translate_recipe_to_english(recipe_data: dict) -> dict:
+    print("RECIPE DATA: ", recipe_data, flush=True)
     """Translate a complete recipe from French to English"""
     translated = {}
     
@@ -34,10 +35,10 @@ def translate_recipe_to_english(recipe_data: dict) -> dict:
         if key in recipe_data:
             translated[key] = recipe_data[key]
     
-    # Translate name
-    if 'name' in recipe_data and recipe_data['name']:
-        original_name = recipe_data['name']
-        translated['name'] = translate_to_english(original_name)
+    # Translate title
+    if 'title' in recipe_data and recipe_data['title']:
+        original_title = recipe_data['title']
+        translated['title'] = translate_to_english(original_title)
     
     # Translate ingredients
     if 'ingredients' in recipe_data and isinstance(recipe_data['ingredients'], list):
@@ -92,10 +93,11 @@ def translate_recipe_to_english(recipe_data: dict) -> dict:
     return translated
 
 def translate_recipe_list_to_english(recipes: list) -> list:
+    print("list", flush=True)
     """Translate a list of recipe previews to English"""
     return [
         {
-            'name': translate_to_english(r.get('name', '')),
+            'title': translate_to_english(r.get('title', '')),
             'image': r.get('image', '')
         }
         for r in recipes
@@ -106,7 +108,10 @@ def translate_request_if_necessary(lang: str, request: str):
         return translate_to_french(request)
     return request
 
-def translate_response_if_necessary(lang: str, response: dict):
-    if lang == 'en':
-        response = translate_recipe_to_english(response)
-    return response
+def translate_response_if_necessary(lang: str, response: dict | list[dict]):
+    if (lang == 'fr'):
+        return response
+    
+    if (isinstance(response, list)):
+        return translate_recipe_list_to_english(response)
+    return translate_recipe_to_english(response)
